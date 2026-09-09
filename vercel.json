@@ -1,37 +1,52 @@
 {
-    "services": {
-        "frontend": {
-            "root": "frontend",
-            "framework": "vite"
-        },
-        "backend": {
-            "root": "backend"
-        },
-        "admin": {
-            "root": "admin"
-        }
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
     },
-    "rewrites": [
-        {
-            "source": "/api(/.*)?",
-            "destination": {
-                "type": "service",
-                "service": "backend"
-            }
-        },
-        {
-            "source": "/admin(/.*)?",
-            "destination": {
-                "type": "service",
-                "service": "admin"
-            }
-        },
-        {
-            "source": "/(.*)",
-            "destination": {
-                "type": "service",
-                "service": "frontend"
-            }
-        }
-    ]
-}
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "admin/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
+    },
+    {
+      "src": "/admin/assets/(.*)",
+      "dest": "/admin/assets/$1"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "/admin/index.html"
+    },
+    {
+      "src": "/admin",
+      "dest": "/admin/index.html"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/frontend/assets/$1"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/frontend/index.html"
+    }
+  ]
+}

@@ -4,9 +4,21 @@
   "private": true,
   "scripts": {
     "build": "npm run build --prefix frontend && npm run build --prefix admin",
-    "start": "npm run build && node backend/server.js",
+    "start": "node backend/server.js",
     "dev": "npm run build && node backend/server.js",
     "dev:multi": "concurrently -n \"BACKEND,FRONTEND,ADMIN\" -c \"cyan,magenta,yellow\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\" \"npm run dev --prefix admin\""
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1",
+    "express-validator": "^7.1.0",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.5.1",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"

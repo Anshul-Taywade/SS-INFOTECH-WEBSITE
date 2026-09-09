@@ -1,30 +1,14 @@
 {
-    "name": "ss-infotech",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "predev": "node copy_logo.js",
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "lint": "next lint"
-    },
-    "dependencies": {
-        "@studio-freight/lenis": "^1.0.42",
-        "clsx": "^2.1.1",
-        "framer-motion": "^11.3.2",
-        "lenis": "^1.3.25",
-        "lucide-react": "^0.400.0",
-        "next": "14.2.5",
-        "react": "^18",
-        "react-dom": "^18",
-        "tailwind-merge": "^2.4.0"
-    },
-    "devDependencies": {
-        "autoprefixer": "^10.4.19",
-        "eslint": "^8",
-        "eslint-config-next": "14.2.5",
-        "postcss": "^8.4.40",
-        "tailwindcss": "^3.4.1"
-    }
+  "name": "ss-infotech-mern-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "npm run build --prefix frontend && npm run build --prefix admin",
+    "start": "npm run build && node backend/server.js",
+    "dev": "npm run build && node backend/server.js",
+    "dev:multi": "concurrently -n \"BACKEND,FRONTEND,ADMIN\" -c \"cyan,magenta,yellow\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\" \"npm run dev --prefix admin\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
 }

@@ -1,9 +1,0 @@
-'use client'; import { useRef, useState } from 'react'; import { motion } from 'framer-motion'; import { ArrowRight } from 'lucide-react';
-export default function SpotlightCard({ icon: Icon, title, description }) { const ref = useRef(null); const [pos, setPos] = useState({ x: 0, y: 0 }); const handleMove = (e) => { if (!ref.current) return; const rect = ref.current.getBoundingClientRect(); setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top }); };
-return (<motion.div ref={ref} onMouseMove={handleMove} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} whileHover={{ y: -8, scale: 1.015 }} transition={{ type: "spring", stiffness: 300 }} className="relative glass-card rounded-2xl p-8 group cursor-default overflow-hidden min-h-[280px]" style={{ background: `radial-gradient(500px circle at ${pos.x}px ${pos.y}px, rgba(147, 51, 234, 0.12), transparent 40%)` }}>
-<div className="absolute inset-0 bg-glass-light pointer-events-none rounded-2xl" />
-<motion.div whileHover={{ scale: 1.12, rotate: 6 }} className="relative z-10 mb-5 p-3 bg-primary-dark/5 rounded-xl w-fit text-primary-dark"><Icon size={32} strokeWidth={1.5} /></motion.div>
-<h3 className="relative z-10 text-xl font-bold text-primary-dark mb-3">{title}</h3>
-<p className="relative z-10 text-sm text-text-muted leading-relaxed flex-grow">{description}</p>
-<motion.a href="#" className="relative z-10 mt-5 flex items-center gap-2 text-sm font-semibold text-primary-dark hover:text-secondary-accent transition-colors">Learn More <motion.span initial={{ x: 0 }} whileHover={{ x: 6 }}><ArrowRight size={16} /></motion.span></motion.a>
-</motion.div>); }

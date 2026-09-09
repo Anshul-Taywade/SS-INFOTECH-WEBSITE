@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 240" width="550" height="240">
+  <defs>
+    <!-- Dark Purple Metallic Sheen Gradient for Top Icon Box -->
+    <linearGradient id="ss-box-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B054D" />
+      <stop offset="35%" stop-color="#7B148C" />
+      <stop offset="50%" stop-color="#A11BB0" />
+      <stop offset="65%" stop-color="#7B148C" />
+      <stop offset="100%" stop-color="#3B054D" />
+    </linearGradient>
+
+    <!-- Metallic Purple Gradient for INFOTECH Letters -->
+    <linearGradient id="ss-text-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3D0652" />
+      <stop offset="25%" stop-color="#6A107A" />
+      <stop offset="50%" stop-color="#8E179E" />
+      <stop offset="75%" stop-color="#6A107A" />
+      <stop offset="100%" stop-color="#3D0652" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. TOP CENTER ICON BOX (100x100 Square with Rounded Corners) -->
+  <g transform="translate(225, 10)">
+    <rect x="0" y="0" width="100" height="100" rx="8" fill="url(#ss-box-gradient)" />
+    
+    <!-- Exact Double-S Interlocking White Monogram Mark -->
+    <g transform="translate(20, 18)">
+      <!-- Upper S Loop -->
+      <path d="M 40,12 C 50,12 54,20 46,30 L 22,62 C 14,72 4,64 14,50 L 32,26 C 38,18 32,14 24,16" 
+            fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" />
+      <!-- Lower S Loop -->
+      <path d="M 18,52 C 8,52 4,44 12,34 L 36,2 C 44,-8 54,-1 44,12 L 26,36 C 20,44 26,48 34,45" 
+            fill="none" stroke="#FFFFFF" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+    </g>
+  </g>
+
+  <!-- 2. INFOTECH CUSTOM GEOMETRIC LETTERFORMS -->
+  <g transform="translate(30, 120)">
+    <!-- Letter I with top-left diagonal slash -->
+    <g transform="translate(10, 0)">
+      <path d="M 18,10 L 18,54" stroke="url(#ss-text-gradient)" stroke-width="7" stroke-linecap="square" />
+      <path d="M 18,10 L 0,28" stroke="url(#ss-text-gradient)" stroke-width="6.5" stroke-linecap="square" />
+    </g>
+
+    <!-- Letter N -->
+    <g transform="translate(48, 0)">
+      <path d="M 0,10 L 0,54 M 0,10 L 38,54 M 38,10 L 38,54" stroke="url(#ss-text-gradient)" stroke-width="7" stroke-linecap="square" />
+    </g>
+
+    <!-- Letter F with square dot accent -->
+    <g transform="translate(106, 0)">
+      <path d="M 0,10 L 0,54 M 0,10 L 38,10 M 0,32 L 28,32" stroke="url(#ss-text-gradient)" stroke-width="7" stroke-linecap="square" />
+      <rect x="14" y="18" width="4.5" height="4.5" fill="#7B148C" />
+    </g>
+
+    <!-- Letter O (Custom Squircle with top gradient) -->
+    <g transform="translate(162, 0)">
+      <path d="M 22,10 C 46,10 64,16 64,32 C 64,48 46,54 22,54 C -2,54 -16,48 -16,32 C -16,16 -2,10 22,10 Z" 
+            fill="none" stroke="url(#ss-text-gradient)" stroke-width="7" />
+    </g>
+
+    <!-- Letter T -->
+    <g transform="translate(254, 0)">
+      <path d="M 0,10 L 44,10 M 22,10 L 22,54" stroke="url(#ss-text-gradient)" stroke-width="7" stroke-linecap="square" />
+    </g>
+
+    <!-- Letter E with square dot accent -->
+    <g transform="translate(316, 0)">
+      <path d="M 0,10 L 0,54 M 0,10 L 36,10 M 0,32 L 26,32 M 0,54 L 36,54" stroke="url(#ss-text-gradient)" stroke-width="7" stroke-linecap="square" />
+      <rect x="14" y="18" width="4.5" height="4.5" fill="#7B148C" />
+    </g>
+
+    <!-- Letter C -->
+    <g transform="translate(370, 0)">
+      <path d="M 36,20 C 20,8 4,20 4,32 C 4,44 20,54 36,44" fill="none" stroke="url(#ss-text-gradient)" stroke-width="7" stroke-linecap="square" />
+    </g>
+
+    <!-- Letter H -->
+    <g transform="translate(422, 0)">
+      <path d="M 0,10 L 0,54 M 0,32 L 34,32 M 34,10 L 34,54" stroke="url(#ss-text-gradient)" stroke-width="7" stroke-linecap="square" />
+    </g>
+
+    <!-- End Floating Horizontal Dash -->
+    <g transform="translate(468, 0)">
+      <path d="M 0,32 L 20,32" stroke="url(#ss-text-gradient)" stroke-width="6" stroke-linecap="square" />
+    </g>
+  </g>
+
+  <!-- 3. TAGLINE TEXT (IT RESEARCH & PRODUCTS DEVELOPMENT FIRM) -->
+  <text x="275" y="212" 
+        text-anchor="middle" 
+        font-family="'Plus Jakarta Sans', 'Inter', 'SF Pro Text', system-ui, -apple-system, sans-serif" 
+        font-weight="900" 
+        font-size="15.5" 
+        letter-spacing="2.6" 
+        fill="#550868">
+    IT RESEARCH &amp; PRODUCTS DEVELOPMENT FIRM
+  </text>
+</svg>

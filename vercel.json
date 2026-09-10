@@ -30,6 +30,14 @@
       "dest": "/admin/assets/$1"
     },
     {
+      "src": "/admin/images/(.*)",
+      "dest": "/admin/images/$1"
+    },
+    {
+      "src": "/admin/img/(.*)",
+      "dest": "/admin/img/$1"
+    },
+    {
       "src": "/admin/(.*)",
       "dest": "/admin/index.html"
     },
@@ -42,6 +50,18 @@
       "dest": "/frontend/assets/$1"
     },
     {
+      "src": "/images/(.*)",
+      "dest": "/frontend/images/$1"
+    },
+    {
+      "src": "/img/(.*)",
+      "dest": "/frontend/img/$1"
+    },
+    {
+      "src": "/(.*\\.(?:ico|png|jpg|jpeg|svg|webp|gif|json|xml|txt|webmanifest|woff|woff2|ttf|eot))",
+      "dest": "/frontend/$1"
+    },
+    {
       "handle": "filesystem"
     },
     {
@@ -49,4 +69,5 @@
       "dest": "/frontend/index.html"
     }
   ]
-}
+}
+

@@ -154,8 +154,8 @@ export default function Footer() {
                   disabled={loading}
                   className="bg-white hover:bg-purple-50 text-purple-950 px-4 py-2 rounded-xl text-xs font-extrabold transition-all shadow-md flex items-center gap-1.5 font-jakarta uppercase cursor-pointer disabled:opacity-50"
                 >
-                  <span>{loading ? 'Joining...' : 'Join'}</span>
-                  <Send size={11} className="text-purple-900" />
+                  <span className="text-purple-950 dark:text-purple-950 font-black font-jakarta tracking-wider">{loading ? 'Joining...' : 'Join'}</span>
+                  <Send size={12} className="text-purple-950 dark:text-purple-950 stroke-[2.5]" />
                 </button>
               </div>
 

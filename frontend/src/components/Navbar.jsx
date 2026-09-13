@@ -18,7 +18,6 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { pathname } = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,34 +26,6 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleGetConsultation = (e) => {
-    if (e) e.preventDefault();
-    setMobileMenuOpen(false);
-
-    const scrollToForm = () => {
-      const contactElem = document.getElementById('consultation-section') || document.getElementById('contact');
-      if (contactElem) {
-        if (window.lenis) {
-          window.lenis.scrollTo(contactElem, { offset: -90, duration: 1.2 });
-        } else {
-          const top = contactElem.getBoundingClientRect().top + window.pageYOffset - 90;
-          window.scrollTo({ top, behavior: 'smooth' });
-        }
-        const firstInput = contactElem.querySelector('input, textarea');
-        if (firstInput) {
-          setTimeout(() => firstInput.focus(), 600);
-        }
-      }
-    };
-
-    if (pathname === '/') {
-      scrollToForm();
-    } else {
-      navigate('/#consultation-section');
-      setTimeout(scrollToForm, 300);
-    }
-  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
@@ -123,13 +94,12 @@ export default function Navbar() {
             </a>
 
             {/* Get Consultation White Pill CTA Button */}
-            <a
-              href="/#consultation-section"
-              onClick={handleGetConsultation}
-              className="px-5 py-2 rounded-full bg-white text-[#5B21B6] hover:bg-purple-50 font-bold text-xs xl:text-sm tracking-wide shadow-md shadow-purple-950/20 hover:shadow-lg transition-all hover:scale-105 cursor-pointer whitespace-nowrap select-none"
+            <Link
+              to="/contact"
+              className="px-5 py-2 rounded-full bg-white text-[#5B21B6] dark:text-[#5B21B6] hover:bg-purple-50 font-black text-xs xl:text-sm tracking-wide shadow-md shadow-purple-950/20 hover:shadow-lg transition-all hover:scale-105 cursor-pointer whitespace-nowrap select-none font-jakarta"
             >
-              Get Consultation
-            </a>
+              <span className="text-[#5B21B6] dark:text-[#5B21B6] font-black font-jakarta">Get Consultation</span>
+            </Link>
 
             {/* Theme Toggle */}
             <ThemeToggle />
@@ -196,14 +166,14 @@ export default function Navbar() {
                 <span>Call Us: +91 77700 23791</span>
               </a>
 
-              <button
-                type="button"
-                onClick={handleGetConsultation}
-                className="flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-full text-[#5B21B6] bg-white hover:bg-purple-50 shadow-md cursor-pointer w-full"
+              <Link
+                to="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 py-2.5 text-sm font-black rounded-full text-[#5B21B6] dark:text-[#5B21B6] bg-white hover:bg-purple-50 shadow-md cursor-pointer w-full font-jakarta"
               >
-                <span>Get Consultation</span>
-                <ArrowUpRight size={16} />
-              </button>
+                <span className="text-[#5B21B6] dark:text-[#5B21B6] font-black font-jakarta">Get Consultation</span>
+                <ArrowUpRight size={16} className="text-[#5B21B6] dark:text-[#5B21B6]" />
+              </Link>
             </div>
           </motion.div>
         )}

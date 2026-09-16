@@ -140,42 +140,12 @@ export default function GalleryPage() {
         >
           <AnimatePresence>
             {filteredItems.map((item, idx) => (
-              <motion.div
+              <GalleryCard
                 key={item.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
+                item={item}
+                idx={idx}
                 onClick={() => setLightboxIndex(idx)}
-                className="break-inside-avoid relative rounded-3xl overflow-hidden glass-card cursor-pointer group shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-200 dark:border-slate-800"
-              >
-                <div className="relative overflow-hidden w-full bg-slate-900">
-                  <img
-                    src={item.imgSrc}
-                    alt={item.title}
-                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                    loading="lazy"
-                  />
-                  
-                  {/* Badge */}
-                  <div className="absolute top-4 left-4 z-10">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-900/80 text-purple-200 border border-purple-700/60 backdrop-blur-md">
-                      {item.category}
-                    </span>
-                  </div>
-
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 font-jakarta">
-                    <h3 className="text-white font-black text-lg font-outfit leading-snug">{item.title}</h3>
-                    <p className="text-slate-300 text-xs mt-1.5 line-clamp-2">{item.caption}</p>
-                    <div className="flex items-center justify-between mt-4 text-[11px] font-bold text-purple-300 pt-3 border-t border-white/10">
-                      <span>{item.location || 'SS Infotech'}</span>
-                      <span>{item.date || '2024'}</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              />
             ))}
           </AnimatePresence>
         </motion.div>
@@ -183,6 +153,7 @@ export default function GalleryPage() {
 
       {/* Lightbox Modal */}
       <AnimatePresence>
+
         {activeItem && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -238,3 +209,58 @@ export default function GalleryPage() {
     </main>
   );
 }
+
+function GalleryCard({ item, idx, onClick }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.35, delay: Math.min(idx * 0.03, 0.3) }}
+      onClick={onClick}
+      className="break-inside-avoid relative rounded-3xl overflow-hidden glass-card cursor-pointer group shadow-lg hover:shadow-2xl transition-all duration-500 border border-slate-200 dark:border-slate-800 bg-slate-900"
+    >
+      <div className="relative overflow-hidden w-full min-h-[220px] bg-slate-800/60 flex items-center justify-center">
+        {/* Shimmer Placeholder while image downloads */}
+        {!isLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-800 via-slate-700/50 to-slate-800 animate-pulse flex items-center justify-center">
+            <ImageIcon className="w-8 h-8 text-slate-600/60 animate-bounce" />
+          </div>
+        )}
+
+        <img
+          src={item.imgSrc}
+          alt={item.title}
+          className={`w-full h-auto object-cover group-hover:scale-105 transition-all duration-500 ease-out ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          loading={idx < 4 ? 'eager' : 'lazy'}
+          fetchPriority={idx < 4 ? 'high' : 'auto'}
+          decoding="async"
+          onLoad={() => setIsLoaded(true)}
+        />
+
+        {/* Badge */}
+        <div className="absolute top-4 left-4 z-10">
+          <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-900/90 text-purple-100 border border-purple-600/60 backdrop-blur-md shadow-sm">
+            {item.category}
+          </span>
+        </div>
+
+        {/* Gradient Overlay on Hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 font-jakarta">
+          <h3 className="text-white font-black text-lg font-outfit leading-snug">{item.title}</h3>
+          <p className="text-slate-300 text-xs mt-1.5 line-clamp-2">{item.caption}</p>
+          <div className="flex items-center justify-between mt-4 text-[11px] font-bold text-purple-300 pt-3 border-t border-white/10">
+            <span>{item.location || 'SS Infotech'}</span>
+            <span>{item.date || '2024'}</span>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+

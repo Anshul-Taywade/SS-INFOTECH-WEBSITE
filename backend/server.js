@@ -23,8 +23,11 @@ const dashboardRoutes = require('./routes/dashboard.routes');
 // Initialize app
 const app = express();
 
-// Connect to Database
-connectDB();
+// Connect to Database in persistent environment
+if (!process.env.VERCEL) {
+  connectDB();
+}
+
 
 // Security Middlewares - disable contentSecurityPolicy in helmet for local static serving
 app.use(helmet({ contentSecurityPolicy: false }));
@@ -32,10 +35,21 @@ app.use(helmet({ contentSecurityPolicy: false }));
 // Enable CORS
 app.use(
   cors({
-    origin: [env.CLIENT_URL, env.ADMIN_URL, 'http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:3001', 'http://127.0.0.1:3001', 'http://localhost:5000'],
+    origin: (origin, callback) => {
+      // allow all origins in development / preview or specific origins in production
+      callback(null, true);
+    },
     credentials: true,
   })
 );
+
+// DB auto-connect middleware for serverless invocations
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    await connectDB();
+  }
+  next();
+});
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -101,8 +115,13 @@ if (fs.existsSync(frontendDistPath)) {
   app.use(errorHandler);
 }
 
-// Start Server - Print only 1 clean URL
-const PORT = env.PORT;
-app.listen(PORT, () => {
-  console.log(`🚀 Application running at: http://localhost:${PORT}/`);
-});
+// Start Server locally if not running in Vercel Serverless environment
+if (!process.env.VERCEL) {
+  const PORT = env.PORT;
+  app.listen(PORT, () => {
+    console.log(`🚀 Application running at: http://localhost:${PORT}/`);
+  });
+}
+
+module.exports = app;
+

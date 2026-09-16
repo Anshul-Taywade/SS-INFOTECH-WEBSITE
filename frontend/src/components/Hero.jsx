@@ -1,196 +1,118 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Play, Sparkles, ShieldCheck, Rocket, Cpu, CheckCircle2, Terminal, Award, Globe } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+const capabilities = [
+  { tag: 'Cloud Architecture' },
+  { tag: 'Custom SaaS' },
+  { tag: 'Predictive AI' },
+  { tag: 'Mobile Ecosystems' },
+];
+
+const stats = [
+  { label: 'Years Experience', value: '10+' },
+  { label: 'Projects Delivered', value: '250+' },
+  { label: 'Expert Engineers', value: '50+' },
+  { label: 'Satisfaction Rate', value: '98%' },
+];
 
 export default function Hero() {
   return (
-    <section className="relative pt-28 pb-20 md:pt-36 md:pb-28 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto overflow-hidden">
-      {/* Background Ambient Radial Lights & Pattern */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-tr from-purple-600/20 via-fuchsia-600/15 to-purple-400/25 blur-[160px] rounded-full pointer-events-none -z-10 animate-pulse-glow" />
-      <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none -z-10" />
+    <section className="relative isolate mx-auto my-3 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-4 py-16 shadow-[0_20px_50px_-15px_rgba(147,51,234,0.08)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)] sm:px-8 md:min-h-[720px] md:px-12 md:py-20 transition-colors duration-300">
+      
+      {/* Exact Light Grid Pattern & Soft Radial Purple Ambient Glow */}
+      <div className="pointer-events-none absolute inset-0 opacity-45 dark:opacity-20 [background-image:linear-gradient(rgba(147,51,234,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(147,51,234,0.07)_1px,transparent_1px)] dark:[background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:36px_36px]" />
+      <div className="pointer-events-none absolute -top-36 left-1/2 h-[480px] w-[650px] -translate-x-1/2 rounded-full bg-gradient-to-b from-purple-300/25 via-fuchsia-200/15 to-transparent dark:from-purple-600/20 dark:via-fuchsia-600/10 dark:to-transparent blur-3xl" />
 
-      {/* Top Corporate Announcement Bar */}
-      <motion.div 
-        initial={{ opacity: 0, y: -15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="flex justify-center mb-6"
-      >
-        <div className="inline-flex items-center gap-2.5 bg-gradient-to-r from-purple-100 via-fuchsia-50 to-purple-100 dark:from-purple-950/80 dark:to-slate-900 border border-purple-300/80 dark:border-purple-800/80 px-4 py-1.5 rounded-full shadow-sm hover:border-purple-400 transition-colors">
-          <span className="flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-500 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-600 dark:bg-purple-400" />
-          </span>
-          <span className="text-[11px] font-extrabold tracking-wider text-purple-950 dark:text-purple-200 uppercase font-jakarta">
-            ISO 9001:2015 Certified IT Research &amp; Enterprise Firm
-          </span>
-        </div>
-      </motion.div>
-
-      <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
         
-        {/* Left Column Content */}
-        <div className="flex-1 space-y-8 text-center lg:text-left z-10">
-          
-          {/* Main Headline */}
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] font-outfit"
-          >
-            Empowering Digital <br />
-            <span className="bg-gradient-to-r from-purple-700 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent inline-block relative">
-              Enterprise Engineering
-            </span> &amp; AI
-          </motion.h1>
-
-          {/* Subtitle */}
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-slate-600 dark:text-slate-300 text-base md:text-lg leading-relaxed max-w-xl mx-auto lg:mx-0 font-medium font-outfit"
-          >
-            SS Infotech partners with global organizations to architect resilient cloud platforms, custom SaaS products, and intelligent AI ecosystems engineered for scale.
-          </motion.p>
-
-          {/* Feature highlights pill bar */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.25 }}
-            className="flex flex-wrap justify-center lg:justify-start gap-2.5 font-jakarta"
-          >
-            {['Cloud Architecture', 'Custom SaaS', 'Predictive AI', 'Mobile Ecosystems'].map((tag, idx) => (
-              <span key={idx} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-50 dark:bg-slate-900 border border-purple-200/80 dark:border-slate-800 text-[11px] font-extrabold text-purple-900 dark:text-purple-300">
-                <CheckCircle2 size={13} className="text-purple-600 dark:text-purple-400" />
-                <span>{tag}</span>
-              </span>
-            ))}
-          </motion.div>
-
-          {/* CTA Buttons */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2"
-          >
-            <Link 
-              to="/services"
-              className="px-8 py-4 rounded-full bg-gradient-to-r from-purple-800 via-purple-600 to-fuchsia-600 hover:opacity-95 text-white font-extrabold text-xs tracking-wider uppercase flex items-center gap-2 shadow-xl shadow-purple-600/35 hover:shadow-purple-600/55 hover:scale-[1.03] active:scale-[0.97] transition-all cursor-pointer font-jakarta"
-            >
-              <span>Explore Capabilities</span>
-              <ArrowRight size={16} />
-            </Link>
-
-            <Link 
-              to="/contact"
-              className="px-8 py-4 rounded-full bg-white dark:bg-slate-900 hover:bg-purple-50 dark:hover:bg-slate-800 border border-purple-200/80 dark:border-slate-800 text-slate-900 dark:text-white font-extrabold text-xs tracking-wider uppercase flex items-center gap-2 backdrop-blur-md transition-all shadow-md hover:border-purple-400 cursor-pointer font-jakarta"
-            >
-              <Play size={14} className="text-purple-600 dark:text-purple-400 fill-purple-600 dark:fill-purple-400" />
-              <span>Get Consultation</span>
-            </Link>
-          </motion.div>
-
-          {/* Stats Bar */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.4 }}
-            className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-purple-200/60 dark:border-slate-800/80"
-          >
-            {[
-              { label: 'Years Experience', val: '10+' },
-              { label: 'Projects Delivered', val: '250+' },
-              { label: 'Expert Engineers', val: '50+' },
-              { label: 'Satisfaction Rate', val: '98%' }
-            ].map((stat, idx) => (
-              <div key={idx} className="flex flex-col items-center lg:items-start p-2">
-                <span className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-fuchsia-500 font-outfit">
-                  {stat.val}
-                </span>
-                <span className="text-xs font-bold text-slate-500 dark:text-slate-400 mt-0.5 font-jakarta">
-                  {stat.label}
-                </span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Right Graphic Mockup */}
+        {/* ISO Badge Pill */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9, y: 30 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.2 }}
-          className="relative w-full lg:w-1/2 flex justify-center items-center"
+          initial={{ opacity: 0, y: -12 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.45 }} 
+          className="mb-8"
         >
-          {/* Glowing Backlight Ring */}
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-fuchsia-600/30 rounded-3xl blur-3xl -z-10" />
-
-          {/* Floating SaaS Card container */}
-          <div className="relative w-full max-w-[580px] rounded-3xl glass-card p-3.5 md:p-5 border border-purple-200/80 dark:border-slate-800 shadow-2xl bg-white/95 dark:bg-slate-900/95 overflow-hidden group">
-            
-            {/* Window Header */}
-            <div className="flex items-center justify-between mb-3 px-3.5 py-2 bg-purple-50/80 dark:bg-slate-800/80 rounded-xl border border-purple-100 dark:border-slate-700 font-jakarta">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-rose-500" />
-                <div className="w-3 h-3 rounded-full bg-amber-500" />
-                <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                <span className="ml-2 text-[10px] font-mono font-bold text-purple-900 dark:text-purple-300 flex items-center gap-1">
-                  <Terminal size={12} />
-                  <span>ssinfotech-telemetry-v2.0</span>
-                </span>
-              </div>
-              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300/40">
-                99.99% ONLINE
-              </span>
-            </div>
-
-            {/* Mockup image */}
-            <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-purple-950 to-slate-900 shadow-inner">
-              <img 
-                src="/img/hero-mockup.png" 
-                alt="SS Infotech Software Solutions Mockup" 
-                width={800} 
-                height={600} 
-                className="w-full h-auto object-contain transform group-hover:scale-[1.02] transition-transform duration-700"
-                priority 
-              />
-            </div>
-
-            {/* Floating Badges */}
-            <motion.div 
-              animate={{ y: [-5, 5, -5] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute top-12 -left-4 glass-card px-4 py-2.5 rounded-2xl border border-purple-200 dark:border-slate-700 shadow-xl bg-white/95 dark:bg-slate-900/95 flex items-center gap-3 hidden sm:flex font-jakarta"
-            >
-              <div className="p-2 rounded-xl bg-purple-100 dark:bg-purple-900/60 text-purple-600 dark:text-purple-300">
-                <Rocket size={18} />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-extrabold text-slate-900 dark:text-white">Bank-Grade SLA</span>
-                <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-extrabold">99.99% Uptime</span>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              animate={{ y: [5, -5, 5] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              className="absolute -bottom-3 -right-3 glass-card px-4 py-2.5 rounded-2xl border border-purple-200 dark:border-slate-700 shadow-xl bg-white/95 dark:bg-slate-900/95 flex items-center gap-3 hidden sm:flex font-jakarta"
-            >
-              <div className="p-2 rounded-xl bg-fuchsia-100 dark:bg-fuchsia-900/60 text-fuchsia-600 dark:text-fuchsia-300">
-                <Cpu size={18} />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-extrabold text-slate-900 dark:text-white">Enterprise AI Engine</span>
-                <span className="text-[10px] text-purple-600 dark:text-purple-300 font-extrabold">Cloud Native Solutions</span>
-              </div>
-            </motion.div>
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-purple-300/70 dark:border-purple-800/80 bg-white/80 dark:bg-purple-950/80 px-5 py-2 shadow-sm backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-purple-600 dark:bg-purple-400" />
+            <span className="font-jakarta text-[11px] font-extrabold uppercase tracking-wider text-purple-950 dark:text-purple-200">
+              ISO 9001:2015 CERTIFIED IT RESEARCH &amp; ENTERPRISE FIRM
+            </span>
           </div>
         </motion.div>
+
+        {/* Main Headline */}
+        <motion.div 
+          initial={{ opacity: 0, y: 18 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.55, delay: 0.08 }} 
+          className="w-full px-2 sm:px-6"
+        >
+          <h1 className="font-outfit text-4xl font-extrabold leading-[1.08] tracking-tight text-slate-900 dark:text-white sm:text-5xl md:text-6xl xl:text-7xl">
+            Empowering Digital{' '}
+            <span className="mt-1 block">
+              <span className="bg-gradient-to-r from-purple-600 via-fuchsia-600 to-fuchsia-500 dark:from-purple-400 dark:via-fuchsia-400 dark:to-fuchsia-300 bg-clip-text text-transparent font-black">
+                Enterprise Engineering
+              </span>{' '}
+              &amp; AI
+            </span>
+          </h1>
+          
+          <p className="mx-auto mt-6 max-w-2xl font-outfit text-base font-medium leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg md:text-xl">
+            SS Infotech partners with global organizations to architect resilient cloud platforms, custom SaaS products, and intelligent AI ecosystems engineered for scale.
+          </p>
+
+          {/* Capabilities Tags (4 Pills) */}
+          <div className="mt-9 flex flex-wrap justify-center gap-3 font-jakarta">
+            {capabilities.map(({ tag }) => (
+              <span key={tag} className="inline-flex items-center gap-2 rounded-2xl border border-purple-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-800/90 px-4 py-2.5 text-xs font-extrabold text-purple-950 dark:text-purple-200 shadow-sm backdrop-blur-sm">
+                <CheckCircle2 size={15} className="text-purple-600 dark:text-purple-400" />
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Action Buttons (2 Buttons Only) */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            
+            <Link
+              to="/services"
+              className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-purple-700 via-purple-600 to-fuchsia-600 px-8 py-4 font-jakarta text-xs font-extrabold uppercase tracking-wider text-white shadow-xl shadow-purple-600/30 transition hover:scale-[1.03] active:scale-[0.98]"
+            >
+              EXPLORE CAPABILITIES <ArrowRight size={16} />
+            </Link>
+
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2.5 rounded-full border border-purple-100/90 dark:border-slate-700 bg-white dark:bg-slate-800 px-8 py-4 font-jakarta text-xs font-extrabold uppercase tracking-wider text-slate-900 dark:text-white shadow-md shadow-purple-900/5 dark:shadow-none transition hover:bg-slate-50 dark:hover:bg-slate-700 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
+            >
+              <Play size={14} className="fill-purple-600 text-purple-600 dark:fill-purple-400 dark:text-purple-400" />
+              GET CONSULTATION
+            </Link>
+
+          </div>
+        </motion.div>
+
+        {/* Thin Divider Line */}
+        <div className="my-10 w-full max-w-4xl border-t border-purple-200/60 dark:border-slate-800" />
+
+        {/* Stats Grid (4 Items) */}
+        <motion.div 
+          initial={{ opacity: 0, y: 16 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.55, delay: 0.18 }} 
+          className="grid w-full max-w-4xl grid-cols-2 gap-6 sm:grid-cols-4 font-outfit"
+        >
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <div className="text-3xl font-black text-purple-600 dark:text-purple-400 sm:text-4xl">{stat.value}</div>
+              <div className="mt-1 font-jakarta text-xs font-bold text-slate-600 dark:text-slate-300">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
       </div>
+
     </section>
   );
 }

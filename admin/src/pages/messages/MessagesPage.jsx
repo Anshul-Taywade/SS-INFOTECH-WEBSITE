@@ -46,12 +46,6 @@ export default function MessagesManagerPage() {
 
   const filteredMessages = messages.filter(msg => {
     if (activeFilter === 'All') return true;
-    if (activeFilter === 'Service Inquiries') {
-      return msg.category === 'SERVICE_INQUIRY' || (!msg.category && !msg.service?.toLowerCase().includes('job'));
-    }
-    if (activeFilter === 'Job Applications') {
-      return msg.category === 'JOB_APPLICATION' || (msg.service && msg.service.toLowerCase().includes('job'));
-    }
     return (msg.status || '').toUpperCase() === activeFilter.toUpperCase();
   });
 
@@ -109,7 +103,7 @@ export default function MessagesManagerPage() {
           </div>
 
           <div className="flex items-center gap-2 font-jakarta flex-wrap">
-            {['All', 'Service Inquiries', 'Job Applications', 'New', 'Replied', 'Archived'].map((status) => (
+            {['All', 'New', 'Replied', 'Archived'].map((status) => (
               <button
                 key={status}
                 onClick={() => setActiveFilter(status)}
@@ -148,22 +142,13 @@ export default function MessagesManagerPage() {
                 >
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-extrabold text-white">{msg.name}</span>
-                    <div className="flex items-center gap-1.5">
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase ${
-                        msg.category === 'JOB_APPLICATION' || msg.service?.toLowerCase().includes('job')
-                          ? 'bg-fuchsia-950 text-fuchsia-300 border border-fuchsia-800'
-                          : 'bg-blue-950 text-blue-300 border border-blue-800'
-                      }`}>
-                        {msg.category === 'JOB_APPLICATION' || msg.service?.toLowerCase().includes('job') ? '💼 Job App' : '🛠️ Service'}
-                      </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-extrabold ${
-                        msg.status === 'NEW' || msg.status === 'New' ? 'bg-amber-950 text-amber-400 border border-amber-800' :
-                        msg.status === 'REPLIED' || msg.status === 'Replied' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' :
-                        'bg-slate-800 text-slate-400'
-                      }`}>
-                        {msg.status}
-                      </span>
-                    </div>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+                      msg.status === 'NEW' || msg.status === 'New' ? 'bg-amber-950 text-amber-400 border border-amber-800' :
+                      msg.status === 'REPLIED' || msg.status === 'Replied' ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' :
+                      'bg-slate-800 text-slate-400'
+                    }`}>
+                      {msg.status}
+                    </span>
                   </div>
 
                   <p className="text-xs font-extrabold text-purple-300 truncate">{msg.subject}</p>

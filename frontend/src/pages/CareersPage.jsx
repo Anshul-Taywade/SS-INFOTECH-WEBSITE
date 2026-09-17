@@ -80,19 +80,22 @@ export default function CareersPage() {
 
   const handleApply = async (e) => {
     e.preventDefault();
+    setFormSubmitted(true);
     try {
-      await api.submitJobApplication({
+      await api.submitContact({
         name: formState.name,
         email: formState.email,
-        jobTitle: selectedJob ? selectedJob.title : 'Engineering Role',
-        portfolio: formState.portfolio,
-        notes: formState.notes,
+        service: `Job Application: ${selectedJob ? selectedJob.title : 'Engineering Role'}`,
+        message: `Portfolio/Resume Link: ${formState.portfolio || 'N/A'}\nCover Note: ${formState.notes || 'Interested in job role.'}`
       });
     } catch (err) {
       console.warn('Job Application submission note:', err.message);
     } finally {
-      setSelectedJob(null);
-      setFormState({ name: '', email: '', portfolio: '', notes: '' });
+      setTimeout(() => {
+        setFormSubmitted(false);
+        setSelectedJob(null);
+        setFormState({ name: '', email: '', portfolio: '', notes: '' });
+      }, 4000);
     }
   };
 
@@ -101,7 +104,7 @@ export default function CareersPage() {
       {/* Careers Header Hero Section (Exact 1-to-1 Home Hero Structure) */}
       <section className="relative isolate mx-auto my-3 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-4 py-16 shadow-[0_20px_50px_-15px_rgba(147,51,234,0.08)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)] sm:px-8 md:min-h-[720px] md:px-12 md:py-20 transition-colors duration-500">
         
-        {/* 1. Full-Cover Auto-Playing Background Video (career.mp4) */}
+        {/* 1. Full-Cover Auto-Playing Background Video (service.mp4) */}
         {!videoError && (
           <video
             autoPlay
@@ -116,7 +119,6 @@ export default function CareersPage() {
               videoReady ? 'opacity-85 dark:opacity-85' : 'opacity-0'
             }`}
           >
-            <source src="/videos/career.mp4" type="video/mp4" />
             <source src="/videos/service.mp4" type="video/mp4" />
             <source src="/videos/services.mp4" type="video/mp4" />
           </video>
@@ -290,6 +292,12 @@ export default function CareersPage() {
 
               {/* Form */}
               <form onSubmit={handleApply} className="space-y-4 pt-4 border-t border-purple-100 dark:border-slate-800 font-outfit">
+                {formSubmitted && (
+                  <div className="p-4 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 text-xs font-bold flex items-center gap-2">
+                    <CheckCircle2 size={18} className="text-emerald-600" />
+                    <span>Application received! Our HR team will review your profile within 48 hours.</span>
+                  </div>
+                )}
 
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
@@ -366,6 +374,6 @@ export default function CareersPage() {
         <CTABanner />
       </div>
 
-    </main>
+      </main>
   );
 }

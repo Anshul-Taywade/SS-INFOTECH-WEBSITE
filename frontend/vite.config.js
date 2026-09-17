@@ -25,13 +25,7 @@ function syncVideoAssets() {
     const directService = path.join(downloadsDir, 'service.mp4');
     const directServices = path.join(downloadsDir, 'services.mp4');
     const ssServices = path.join(downloadsDir, 'SS-Infotech-V2-master\\SS-Infotech-V2-master\\frontend\\public\\services.mp4');
-    const directCareer = path.join(downloadsDir, 'career.mp4');
     
-    if (fs.existsSync(directCareer)) {
-      fs.copyFileSync(directCareer, path.join(videoDestDir, 'career.mp4'));
-      console.log('[Vite] Synced career.mp4 from Downloads!');
-    }
-
     if (fs.existsSync(directServices)) {
       fs.copyFileSync(directServices, path.join(videoDestDir, 'services.mp4'));
       fs.copyFileSync(directServices, path.join(videoDestDir, 'service.mp4'));

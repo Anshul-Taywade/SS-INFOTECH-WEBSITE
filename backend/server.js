@@ -19,6 +19,10 @@ const testimonialRoutes = require('./routes/testimonial.routes');
 const partnerRoutes = require('./routes/partner.routes');
 const careerRoutes = require('./routes/career.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
+const galleryRoutes = require('./routes/gallery.routes');
+const teamRoutes = require('./routes/team.routes');
+const settingsRoutes = require('./routes/settings.routes');
+const activityLogRoutes = require('./routes/activityLog.routes');
 
 // Initialize app
 const app = express();
@@ -75,6 +79,10 @@ app.use('/api/v1/testimonials', testimonialRoutes);
 app.use('/api/v1/partners', partnerRoutes);
 app.use('/api/v1/careers', careerRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/gallery', galleryRoutes);
+app.use('/api/v1/team', teamRoutes);
+app.use('/api/v1/settings', settingsRoutes);
+app.use('/api/v1/activity-logs', activityLogRoutes);
 
 // 1. Serve Admin Application at /admin
 const adminDistPath = path.join(__dirname, '../admin/dist');

@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe, Smartphone, Layers, BrainCircuit, Megaphone, Puzzle, ArrowRight, Sparkles, X, CheckCircle2 } from 'lucide-react';
+import { Globe, Smartphone, Layers, BrainCircuit, Megaphone, Puzzle, ArrowRight, Sparkles, X, CheckCircle2, Code } from 'lucide-react';
+import { api } from '@/services/api';
 
-const services = [
+const defaultServices = [
   { 
     id: 'web',
     title: 'Website Development', 
@@ -90,50 +91,113 @@ const services = [
   },
 ];
 
-export default function Services() {
+export default function Services({ hideHeader = false, showVideoBg = false }) {
+  const [servicesList, setServicesList] = useState(defaultServices);
   const [selectedService, setSelectedService] = useState(null);
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+
+  useEffect(() => {
+    loadServices();
+
+    const handleUpdate = () => loadServices();
+    window.addEventListener('ss_services_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('ss_services_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
+
+  const loadServices = async () => {
+    try {
+      const res = await api.getServices();
+      if (res && res.data && res.data.length > 0) {
+        const mapped = res.data.map((srv, idx) => ({
+          id: srv._id || srv.id || `srv-${idx}`,
+          title: srv.title,
+          description: srv.description,
+          details: srv.features || srv.details || ['Enterprise SLA Guarantee', 'Dedicated Software Engineer', '24/7 Incident Support'],
+          icon: defaultServices[idx % defaultServices.length]?.icon || Globe,
+          color: defaultServices[idx % defaultServices.length]?.color || 'from-purple-600 to-indigo-600',
+          iconBg: defaultServices[idx % defaultServices.length]?.iconBg || 'bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800',
+        }));
+        setServicesList(mapped);
+      }
+    } catch (e) {
+      console.warn('Services fallback active');
+    }
+  };
 
   return (
-    <section id="services" className="relative py-24 md:py-32 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+    <section id="services" className="relative py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto overflow-hidden rounded-[2.5rem]">
+      {/* Background Video when enabled */}
+      {showVideoBg && !videoError && (
+        <>
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/img/hero-mockup.png"
+            onLoadedData={() => setVideoReady(true)}
+            onError={() => setVideoError(true)}
+            className={`pointer-events-none absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 ${
+              videoReady ? 'opacity-80 dark:opacity-85' : 'opacity-0'
+            }`}
+          >
+            <source src="/videos/services.mp4" type="video/mp4" />
+            <source src="/videos/service.mp4" type="video/mp4" />
+          </video>
+          <div 
+            className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-white/80 via-purple-50/60 to-white/90 dark:from-[#0b0f19]/85 dark:via-[#111827]/70 dark:to-[#070a12]/95 transition-colors duration-500" 
+            aria-hidden="true"
+          />
+        </>
+      )}
+
       {/* Glow highlight spot */}
       <div className="absolute top-1/3 right-0 w-[450px] h-[450px] bg-fuchsia-600/15 dark:bg-fuchsia-600/25 blur-[150px] rounded-full pointer-events-none -z-10" />
 
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta"
-        >
-          <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
-          <span>Tailored Capabilities</span>
-        </motion.div>
+      {!hideHeader && (
+        <div className="text-center max-w-3xl mx-auto mb-12 md:mb-14 space-y-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta"
+          >
+            <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
+            <span>Tailored Capabilities</span>
+          </motion.div>
 
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-outfit"
-        >
-          Our Premium <span className="gradient-accent">Services</span>
-        </motion.h2>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-outfit"
+          >
+            Our Premium <span className="gradient-accent">Services</span>
+          </motion.h2>
 
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-medium font-outfit"
-        >
-          We provide end-to-end technology research and software development solutions engineered to scale digital enterprises.
-        </motion.p>
-      </div>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-medium font-outfit"
+          >
+            We provide end-to-end technology research and software development solutions engineered to scale digital enterprises.
+          </motion.p>
+        </div>
+      )}
       
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {services.map((service, idx) => {
+        {servicesList.map((service, idx) => {
           const IconComp = service.icon;
           return (
             <motion.div 

@@ -44,7 +44,7 @@ const projects = [
 
 const categories = ['All', 'Web App', 'Cloud & SaaS', 'AI & ML', 'Mobile App'];
 
-export default function PortfolioProjects() {
+export default function PortfolioProjects({ hideHeader = false }) {
   const [activeFilter, setActiveFilter] = useState('All');
 
   const filteredProjects = activeFilter === 'All'
@@ -52,42 +52,44 @@ export default function PortfolioProjects() {
     : projects.filter(p => p.category === activeFilter);
 
   return (
-    <section id="portfolio" className="relative py-24 md:py-32 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+    <section id="portfolio" className="relative py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
       {/* Background Radial Glow */}
       <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-purple-600/15 dark:bg-purple-600/25 blur-[160px] rounded-full pointer-events-none -z-10" />
 
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 15 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta"
-        >
-          <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
-          <span>Case Studies &amp; Showcase</span>
-        </motion.div>
+      {!hideHeader && (
+        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-12 space-y-4">
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta"
+          >
+            <Sparkles size={14} className="text-purple-600 dark:text-purple-400" />
+            <span>Case Studies &amp; Showcase</span>
+          </motion.div>
 
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-outfit"
-        >
-          Featured <span className="gradient-accent">Portfolio &amp; Projects</span>
-        </motion.h2>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-outfit"
+          >
+            Featured <span className="gradient-accent">Portfolio &amp; Projects</span>
+          </motion.h2>
 
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-medium font-outfit"
-        >
-          Explore how we help global enterprises launch high-impact digital products, cloud platforms, and intelligent AI applications.
-        </motion.p>
-      </div>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-slate-600 dark:text-slate-300 text-base leading-relaxed font-medium font-outfit"
+          >
+            Explore how we help global enterprises launch high-impact digital products, cloud platforms, and intelligent AI applications.
+          </motion.p>
+        </div>
+      )}
 
       {/* Filter Tabs */}
       <div className="flex flex-wrap justify-center gap-2 mb-12 font-jakarta">

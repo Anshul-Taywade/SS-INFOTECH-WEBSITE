@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2, Award, Zap, ShieldCheck, Target } from 'lucid
 
 export default function AboutSection() {
   return (
-    <section id="about" className="relative py-24 md:py-32 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+    <section id="about" className="relative py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
       {/* Background glow spot */}
       <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[450px] h-[450px] bg-purple-600/15 dark:bg-purple-600/25 blur-[140px] rounded-full pointer-events-none -z-10" />
 

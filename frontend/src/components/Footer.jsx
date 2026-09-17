@@ -1,12 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, Phone, Send, CheckCircle2, ArrowUpRight, Github, Twitter, Linkedin } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, CheckCircle2, ArrowUpRight, Github, Twitter, Linkedin, ShieldCheck } from 'lucide-react';
 import { api } from '@/services/api';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [settings, setSettings] = useState({
+    companyName: 'SS INFOTECH',
+    certification: 'ISO 9001:2015 Certified Firm',
+    email: 'info@ssinfotech.org',
+    phone: '+91 77700 23791',
+    address: '#40, 2nd Floor, 2nd Cross, 2nd Main, Outer Ring Road, Bangalore.'
+  });
+
+  useEffect(() => {
+    loadSettings();
+
+    const handleUpdate = () => loadSettings();
+    window.addEventListener('ss_settings_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('ss_settings_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
+
+  const loadSettings = async () => {
+    try {
+      const res = await api.getSettings();
+      if (res && res.data) {
+        setSettings(prev => ({ ...prev, ...res.data }));
+      }
+    } catch (e) {
+      console.warn('Footer settings load fallback active');
+    }
+  };
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -51,10 +81,10 @@ export default function Footer() {
               Engineering digital success with innovative technology research, scalable cloud infrastructure, and custom AI applications.
             </p>
 
-            {/* Operational Status Pill */}
-            <div className="inline-flex items-center gap-2 bg-emerald-950/80 border border-emerald-700 px-3 py-1.5 rounded-full text-emerald-300 text-[11px] font-extrabold font-jakarta">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>All Systems Operational</span>
+            {/* ISO Badge synced from Admin Site Settings */}
+            <div className="inline-flex items-center gap-2 bg-purple-950/80 border border-purple-400/40 px-3 py-1.5 rounded-full text-purple-200 text-[11px] font-extrabold font-jakarta">
+              <ShieldCheck size={14} className="text-amber-300 shrink-0" />
+              <span>{settings.certification || 'ISO 9001:2015 Certified Firm'}</span>
             </div>
 
             {/* Social Icons */}
@@ -101,7 +131,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Contact Info */}
+          {/* Column 3: Contact Info (Synced from Admin Site Settings) */}
           <div>
             <h5 className="font-extrabold text-xs text-white dark:text-purple-200 uppercase tracking-wider mb-6 flex items-center gap-2 font-jakarta">
               <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-300" />
@@ -112,19 +142,23 @@ export default function Footer() {
                 <div className="p-1.5 rounded-lg bg-white/10 dark:bg-purple-950/60 text-white dark:text-purple-200 mt-0.5 shrink-0 border border-white/20 dark:border-purple-500/30">
                   <MapPin size={15} />
                 </div>
-                <span className="leading-relaxed dark:text-purple-300/90">#40, 2nd Floor, 2nd Cross, 2nd Main, Outer Ring Road, Bangalore.</span>
+                <span className="leading-relaxed dark:text-purple-300/90">{settings.address || '#40, 2nd Floor, 2nd Cross, 2nd Main, Outer Ring Road, Bangalore.'}</span>
               </li>
               <li className="flex items-center gap-3">
                 <div className="p-1.5 rounded-lg bg-white/10 dark:bg-purple-950/60 text-white dark:text-purple-200 shrink-0 border border-white/20 dark:border-purple-500/30">
                   <Phone size={15} />
                 </div>
-                <a href="tel:+917770023791" className="hover:text-white dark:hover:text-purple-100 transition-colors cursor-pointer dark:text-purple-200">+91 77700 23791</a>
+                <a href={`tel:${settings.phone || '+917770023791'}`} className="hover:text-white dark:hover:text-purple-100 transition-colors cursor-pointer dark:text-purple-200">
+                  {settings.phone || '+91 77700 23791'}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <div className="p-1.5 rounded-lg bg-white/10 dark:bg-purple-950/60 text-white dark:text-purple-200 shrink-0 border border-white/20 dark:border-purple-500/30">
                   <Mail size={15} />
                 </div>
-                <a href="mailto:info@ssinfotech.com" className="hover:text-white dark:hover:text-purple-100 transition-colors cursor-pointer dark:text-purple-200">info@ssinfotech.com</a>
+                <a href={`mailto:${settings.email || 'info@ssinfotech.org'}`} className="hover:text-white dark:hover:text-purple-100 transition-colors cursor-pointer dark:text-purple-200">
+                  {settings.email || 'info@ssinfotech.org'}
+                </a>
               </li>
             </ul>
           </div>
@@ -172,7 +206,7 @@ export default function Footer() {
 
         {/* Bottom copyright bar */}
         <div className="border-t border-white/10 dark:border-purple-900/40 pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-purple-200 dark:text-purple-300/80 gap-4 font-bold font-jakarta">
-          <p>&copy; {new Date().getFullYear()} SS Infotech. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {settings.companyName || 'SS Infotech'}. All rights reserved.</p>
           <div className="flex gap-6 text-purple-100 dark:text-purple-300">
             <Link to="/about" className="hover:text-white dark:hover:text-purple-100 transition-colors cursor-pointer">About Us</Link>
             <Link to="/services" className="hover:text-white dark:hover:text-purple-100 transition-colors cursor-pointer">Services</Link>

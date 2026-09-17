@@ -1,7 +1,7 @@
 import { useAdminTheme } from '@/context/AdminThemeContext';
 import { 
-  User, ShieldCheck, Mail, Phone, Lock, LogOut, X, 
-  Sparkles, CheckCircle2, Key, Clock, Settings 
+  ShieldCheck, LogOut, X, 
+  Key, Clock, Settings 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -111,8 +111,9 @@ export default function AdminUserProfileModal() {
           <button
             onClick={() => {
               if (confirm('Are you sure you want to log out of SS Infotech Admin Panel?')) {
+                localStorage.removeItem('token');
                 setUserModalOpen(false);
-                window.location.href = '/';
+                window.location.href = '/admin';
               }
             }}
             className="w-full py-3 rounded-xl bg-rose-50 dark:bg-rose-950/80 hover:bg-rose-100 dark:hover:bg-rose-900 text-rose-700 dark:text-rose-300 font-extrabold text-xs uppercase tracking-wider font-jakarta transition-colors flex items-center justify-center gap-2 border border-rose-200 dark:border-rose-800 cursor-pointer"

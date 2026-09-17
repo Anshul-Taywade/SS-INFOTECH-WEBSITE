@@ -1,24 +1,71 @@
+import { useState, useEffect } from 'react';
 import CTABanner from '@/components/CTABanner';
 import TrustedBy from '@/components/TrustedBy';
 import { motion } from 'framer-motion';
 import { 
-  Award, ShieldCheck, Target, Eye, Heart, Compass, Users, 
-  CheckCircle2, Globe2, Cpu, Zap, ArrowRight, Building2, Sparkles 
+  ShieldCheck, Target, Eye, Heart, 
+  Globe2, ArrowRight, Building2, Sparkles, Users, Mail 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { api } from '@/services/api';
+
+const defaultTeam = [
+  {
+    id: 'team-1',
+    name: 'Executive Director & Tech Leader',
+    role: 'Executive Management',
+    email: 'executive@ssinfotech.org',
+    photo: '/images/gallery/ss-infotech-executive-leader.jpg',
+    specialty: 'Enterprise Software Architecture & Strategy'
+  },
+  {
+    id: 'team-2',
+    name: 'Senior Software Specialist & Tech Lead',
+    role: 'Engineering Lead',
+    email: 'lead@ssinfotech.org',
+    photo: '/images/gallery/ss-infotech-team-lead-1.jpg',
+    specialty: 'Cloud Platforms & Full-Stack Development'
+  }
+];
 
 export default function AboutPage() {
+  const [teamMembers, setTeamMembers] = useState(defaultTeam);
+
+  useEffect(() => {
+    loadTeam();
+
+    const handleUpdate = () => loadTeam();
+    window.addEventListener('ss_team_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('ss_team_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
+
+  const loadTeam = async () => {
+    try {
+      const res = await api.getTeam();
+      if (res && res.data && res.data.length > 0) {
+        setTeamMembers(res.data);
+      }
+    } catch (e) {
+      console.warn('Team fallback active');
+    }
+  };
+
   return (
     <main className="min-h-screen w-full overflow-x-hidden flex flex-col bg-bg text-text font-sans selection:bg-primary selection:text-white transition-colors duration-300">
-      {/* Header Banner */}
-      <section className="relative pt-36 pb-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto overflow-hidden text-center">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 blur-[160px] rounded-full pointer-events-none -z-10" />
+      {/* Header Hero Card */}
+      <section className="relative isolate mx-auto mt-6 mb-4 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-6 py-14 sm:px-12 md:py-20 text-center shadow-lg shadow-purple-900/5 transition-colors duration-500">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 dark:bg-purple-600/25 blur-[160px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none -z-10" />
         
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-purple-950/80 border border-purple-200/90 dark:border-purple-800 text-purple-950 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4 shadow-sm backdrop-blur-md"
         >
           <Building2 size={14} className="text-purple-600 dark:text-purple-400" />
           <span>Corporate Overview</span>
@@ -44,7 +91,7 @@ export default function AboutPage() {
       </section>
 
       {/* Main Corporate Story */}
-      <section className="py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+      <section className="py-14 md:py-18 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           <motion.div 
@@ -115,7 +162,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission, Vision & Core Values */}
-      <section className="py-20 px-6 md:px-12 lg:px-16 xl:px-20 bg-purple-50/50 dark:bg-slate-950/60 border-y border-purple-100 dark:border-slate-800">
+      <section className="py-14 md:py-18 px-6 md:px-12 lg:px-16 xl:px-20 bg-purple-50/50 dark:bg-slate-950/60 border-y border-purple-100 dark:border-slate-800">
         <div className="w-full max-w-[1400px] mx-auto space-y-16">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white font-outfit">
@@ -160,8 +207,52 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Dynamic Team & Staff Section (Synced with Admin Panel) */}
+      <section className="py-14 md:py-18 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+        <div className="space-y-12">
+          <div className="text-center max-w-2xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta">
+              <Users size={14} className="text-purple-600 dark:text-purple-400" />
+              <span>Corporate Leadership</span>
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white font-outfit">
+              Meet Our <span className="gradient-accent">Engineering Leadership</span>
+            </h2>
+            <p className="text-slate-600 dark:text-slate-300 text-sm font-medium font-outfit">
+              Experienced tech leaders and specialists driving innovation at SS Infotech.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {teamMembers.map((member) => (
+              <div 
+                key={member.id || member._id}
+                className="glass-card rounded-3xl p-6 border border-purple-200/80 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 shadow-xl flex items-center gap-5 hover:border-purple-400 transition-all"
+              >
+                <div className="w-24 h-24 rounded-2xl overflow-hidden bg-slate-900 shrink-0 border border-purple-300/50 dark:border-purple-800">
+                  <img src={member.photo} alt={member.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="space-y-1.5 font-outfit">
+                  <span className="px-3 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800 uppercase font-jakarta">
+                    {member.role}
+                  </span>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">{member.name}</h3>
+                  <p className="text-xs text-purple-600 dark:text-purple-400 font-bold font-jakarta">{member.specialty}</p>
+                  {member.email && (
+                    <p className="text-[11px] text-slate-500 font-mono flex items-center gap-1.5 pt-1">
+                      <Mail size={12} className="text-purple-500" />
+                      <span>{member.email}</span>
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Life & Culture Showcase featuring Real Photos */}
-      <section className="py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+      <section className="py-14 md:py-18 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto border-t border-purple-100 dark:border-slate-800">
         <div className="space-y-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
@@ -219,7 +310,7 @@ export default function AboutPage() {
                     alt={item.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
-                      e.currentTarget.src = '/img/hero-mockup.png';
+                      e.currentTarget.src = '/images/gallery/ss-infotech-classroom-session-1.jpg';
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -246,6 +337,6 @@ export default function AboutPage() {
         <CTABanner />
       </div>
 
-      </main>
+    </main>
   );
 }

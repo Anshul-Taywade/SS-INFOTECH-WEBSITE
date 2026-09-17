@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { ShieldCheck, Lock, Mail, ArrowRight, Sparkles } from 'lucide-react';
+import { Lock, Mail, ArrowRight } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -33,20 +33,25 @@ export default function LoginPage() {
 
       <div className="max-w-md w-full bg-slate-900/90 border border-slate-800 backdrop-blur-xl p-8 rounded-3xl shadow-2xl space-y-8 z-10">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 to-fuchsia-600 shadow-lg shadow-purple-500/20 mb-2">
-            <ShieldCheck size={32} className="text-white" />
+          <div className="bg-white px-4 py-2 rounded-2xl shadow-md border border-white/20 inline-flex items-center mb-1">
+            <img 
+              src="/images/logos/logo.png" 
+              alt="SS INFOTECH" 
+              className="h-10 w-auto object-contain" 
+              onError={(e) => { e.currentTarget.src = '/images/logos/logo.jpg'; }}
+            />
           </div>
-          <h1 className="text-2xl font-black text-white font-outfit tracking-tight">SS Infotech Admin Portal</h1>
-          <p className="text-xs text-slate-400 font-medium">Enter credentials to access central admin console</p>
+          <h1 className="text-2xl font-black text-white font-outfit tracking-tight">Admin Portal Login</h1>
+          <p className="text-xs text-slate-400 font-medium font-jakarta">Enter credentials to access central admin console</p>
         </div>
 
         {error && (
-          <div className="p-4 rounded-xl bg-red-950/80 border border-red-800/80 text-red-200 text-xs font-semibold text-center">
+          <div className="p-4 rounded-xl bg-red-950/80 border border-red-800/80 text-red-200 text-xs font-semibold text-center font-jakarta">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 font-jakarta">
           <div className="space-y-2">
             <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">Email Address</label>
             <div className="relative">
@@ -80,14 +85,14 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-extrabold text-sm shadow-lg shadow-purple-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-extrabold text-sm shadow-lg shadow-purple-600/30 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 uppercase tracking-wider font-jakarta cursor-pointer"
           >
             <span>{loading ? 'Authenticating...' : 'Sign In to Console'}</span>
             <ArrowRight size={16} />
           </button>
         </form>
 
-        <div className="text-center pt-2 border-t border-slate-800/80">
+        <div className="text-center pt-2 border-t border-slate-800/80 font-jakarta">
           <p className="text-[11px] text-slate-500 font-medium">SS Infotech &copy; {new Date().getFullYear()} Enterprise Systems</p>
         </div>
       </div>

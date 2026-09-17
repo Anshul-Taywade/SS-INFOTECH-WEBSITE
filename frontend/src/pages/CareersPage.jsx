@@ -75,6 +75,8 @@ export default function CareersPage() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formState, setFormState] = useState({ name: '', email: '', portfolio: '', notes: '' });
+  const [videoReady, setVideoReady] = useState(false);
+  const [videoError, setVideoError] = useState(false);
 
   const handleApply = async (e) => {
     e.preventDefault();
@@ -99,65 +101,115 @@ export default function CareersPage() {
 
   return (
     <main className="min-h-screen w-full overflow-x-hidden flex flex-col bg-bg text-text font-sans selection:bg-primary selection:text-white transition-colors duration-300">
-      {/* Careers Header Banner */}
-      <section className="relative pt-36 pb-16 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto overflow-hidden text-center">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 blur-[160px] rounded-full pointer-events-none -z-10" />
+      {/* Careers Header Hero Section (Exact 1-to-1 Home Hero Structure) */}
+      <section className="relative isolate mx-auto my-3 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-4 py-16 shadow-[0_20px_50px_-15px_rgba(147,51,234,0.08)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)] sm:px-8 md:min-h-[720px] md:px-12 md:py-20 transition-colors duration-500">
         
-        <motion.div 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4"
-        >
-          <Briefcase size={14} className="text-purple-600 dark:text-purple-400" />
-          <span>Engineering Careers</span>
-        </motion.div>
+        {/* 1. Full-Cover Auto-Playing Background Video (service.mp4) */}
+        {!videoError && (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            poster="/img/hero-mockup.png"
+            onLoadedData={() => setVideoReady(true)}
+            onError={() => setVideoError(true)}
+            className={`pointer-events-none absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 ${
+              videoReady ? 'opacity-85 dark:opacity-85' : 'opacity-0'
+            }`}
+          >
+            <source src="/videos/service.mp4" type="video/mp4" />
+            <source src="/videos/services.mp4" type="video/mp4" />
+          </video>
+        )}
 
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight font-outfit max-w-4xl mx-auto leading-tight"
-        >
-          Build the Future of <span className="gradient-accent">Enterprise Tech</span>
-        </motion.h1>
+        {/* 2. Sleek Dual-Theme Readability Overlay */}
+        <div 
+          className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-slate-900/15 via-transparent to-slate-900/25 dark:from-[#0b0f19]/70 dark:via-[#111827]/50 dark:to-[#070a12]/80 transition-colors duration-500" 
+          aria-hidden="true"
+        />
 
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-slate-600 dark:text-slate-300 text-base md:text-lg max-w-2xl mx-auto mt-6 font-medium leading-relaxed font-outfit"
-        >
-          Join an engineering-first culture dedicated to technological innovation, continuous learning, and building high-impact enterprise software.
-        </motion.p>
-      </section>
+        {/* 3. Tech Grid Pattern & Soft Radial Purple Ambient Glow */}
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-20 dark:opacity-20 [background-image:linear-gradient(rgba(147,51,234,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(147,51,234,0.08)_1px,transparent_1px)] dark:[background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:36px_36px]" />
+        <div className="pointer-events-none absolute -top-36 left-1/2 z-0 h-[480px] w-[650px] -translate-x-1/2 rounded-full bg-gradient-to-b from-purple-300/25 via-fuchsia-200/15 to-transparent dark:from-purple-600/20 dark:via-fuchsia-600/10 dark:to-transparent blur-3xl" />
 
-      {/* Why Join Us Perks */}
-      <section className="py-12 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            { icon: Code, title: 'Cutting-Edge Stack', desc: 'Work with Next.js 14, React 18, AI models, Kubernetes, and modern cloud architecture.' },
-            { icon: GraduationCap, title: 'Continuous Growth', desc: 'Dedicated annual learning budgets, conference passes, and technical certification sponsorships.' },
-            { icon: HeartHandshake, title: 'Work-Life Balance', desc: 'Flexible hybrid policies, wellness programs, and competitive compensation packages.' },
-            { icon: Shield, title: 'Engineering Autonomy', desc: 'Solve challenging technical problems with ownership and collaborative peer reviews.' }
-          ].map((perk, idx) => (
-            <motion.div
-              key={idx}
-              whileHover={{ y: -5 }}
-              className="glass-card p-6 rounded-3xl border border-purple-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 shadow-md space-y-3"
-            >
-              <div className="p-3 rounded-2xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 w-fit">
-                <perk.icon size={22} />
+        {/* 4. Content Container */}
+        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
+          
+          {/* Badge Pill */}
+          <motion.div 
+            initial={{ opacity: 0, y: -12 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.45 }} 
+            className="mb-8"
+          >
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-purple-200/90 dark:border-purple-800/80 bg-white/90 dark:bg-purple-950/80 px-5 py-2 shadow-sm backdrop-blur-md">
+              <span className="h-2 w-2 rounded-full bg-purple-600 dark:bg-purple-400 animate-pulse" />
+              <span className="font-jakarta text-[11px] font-extrabold uppercase tracking-wider text-purple-950 dark:text-purple-200">
+                JOIN OUR GLOBAL IT &amp; ENGINEERING TEAM
+              </span>
+            </div>
+          </motion.div>
+
+          {/* Main Headline */}
+          <motion.div 
+            initial={{ opacity: 0, y: 18 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.55, delay: 0.08 }} 
+            className="w-full px-2 sm:px-6"
+          >
+            <h1 className="font-outfit text-4xl font-extrabold leading-[1.08] tracking-tight text-slate-950 dark:text-white sm:text-5xl md:text-6xl xl:text-7xl drop-shadow-md [text-shadow:_0_1px_6px_rgba(255,255,255,0.95),_0_0_15px_rgba(255,255,255,0.85)] dark:[text-shadow:_0_3px_18px_rgba(0,0,0,0.95)]">
+              Build the Future of Enterprise Tech
+            </h1>
+            
+            <p className="mx-auto mt-6 max-w-2xl font-outfit text-base font-extrabold leading-relaxed text-slate-950 dark:text-slate-100 sm:text-lg md:text-xl drop-shadow-md [text-shadow:_0_1px_6px_rgba(255,255,255,0.95),_0_0_12px_rgba(255,255,255,0.85)] dark:[text-shadow:_0_2px_12px_rgba(0,0,0,0.9)]">
+              Join an engineering-first culture dedicated to technological innovation, continuous learning, and building high-impact enterprise software.
+            </p>
+
+            {/* Action Button */}
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <a
+                href="#open-positions"
+                className="inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-purple-700 via-purple-600 to-fuchsia-600 px-8 py-4 font-jakarta text-xs font-extrabold uppercase tracking-wider text-white shadow-xl shadow-purple-600/30 transition hover:scale-[1.03] active:scale-[0.98]"
+              >
+                VIEW OPEN POSITIONS <ArrowRight size={16} />
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Thin Divider Line */}
+          <div className="my-10 w-full max-w-4xl border-t border-purple-200/60 dark:border-slate-800" />
+
+          {/* Perks Grid (4 Items, exactly like Stats grid on Home Hero) */}
+          <motion.div 
+            initial={{ opacity: 0, y: 16 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.55, delay: 0.18 }} 
+            className="grid w-full max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4 font-outfit"
+          >
+            {[
+              { icon: Code, title: 'Cutting-Edge Stack', desc: 'React 18 & Cloud AI' },
+              { icon: GraduationCap, title: 'Continuous Growth', desc: 'Certifications & Seminars' },
+              { icon: HeartHandshake, title: 'Work-Life Balance', desc: 'Flexible Hybrid Culture' },
+              { icon: Shield, title: 'Tech Autonomy', desc: 'Engineering Ownership' }
+            ].map((perk, idx) => (
+              <div key={idx} className="text-center rounded-2xl bg-white/85 dark:bg-slate-900/50 p-4 border border-purple-100/90 dark:border-slate-800/50 backdrop-blur-md shadow-sm">
+                <div className="flex justify-center text-purple-700 dark:text-purple-400 mb-2">
+                  <perk.icon size={22} />
+                </div>
+                <div className="text-sm font-extrabold text-slate-950 dark:text-white font-outfit">{perk.title}</div>
+                <div className="mt-1 font-jakarta text-xs font-bold text-slate-700 dark:text-slate-300">{perk.desc}</div>
               </div>
-              <h3 className="text-base font-extrabold text-slate-900 dark:text-white font-outfit">{perk.title}</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 font-medium font-outfit leading-relaxed">{perk.desc}</p>
-            </motion.div>
-          ))}
+            ))}
+          </motion.div>
+
         </div>
+
       </section>
 
       {/* Open Positions */}
-      <section className="py-16 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto space-y-8">
+      <section id="open-positions" className="py-14 md:py-18 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white font-outfit">
             Open <span className="gradient-accent">Engineering Positions</span>

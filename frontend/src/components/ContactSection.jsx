@@ -15,6 +15,7 @@ export default function ContactSection({ hideCTABanner = false, hideHeader = fal
     setIsSubmitting(true);
     setErrorMessage('');
     try {
+      await api.submitProjectInquiry(formState);
       await api.submitContact(formState);
       setSubmitted(true);
       setFormState({ name: '', email: '', service: 'Website Development', message: '' });

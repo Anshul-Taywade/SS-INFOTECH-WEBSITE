@@ -144,16 +144,92 @@ export const api = {
     return result || { success: true, data: newLog };
   },
 
-  // Contacts / Inquiries
+  // Contacts / Inquiries & Applications
+  getProjectInquiries: async () => {
+    try {
+      const res = await apiClient.get('/project-inquiries');
+      return res.data;
+    } catch (e) {
+      return { data: [] };
+    }
+  },
+
+  getJobApplications: async () => {
+    try {
+      const res = await apiClient.get('/job-applications');
+      return res.data;
+    } catch (e) {
+      return { data: [] };
+    }
+  },
+
+  getNewsletterSubscribers: async () => {
+    try {
+      const res = await apiClient.get('/newsletter');
+      return res.data;
+    } catch (e) {
+      return { data: [] };
+    }
+  },
+
   getContacts: async () => {
     try {
-      const res = await apiClient.get('/contacts');
-      if (res.data && res.data.data) {
-        localStorage.setItem('ss_contacts', JSON.stringify(res.data.data));
+      const [contactsRes, projRes, jobRes] = await Promise.allSettled([
+        apiClient.get('/contacts'),
+        apiClient.get('/project-inquiries'),
+        apiClient.get('/job-applications')
+      ]);
+
+      let combined = [];
+
+      if (projRes.status === 'fulfilled' && projRes.value?.data?.data) {
+        const mappedProj = projRes.value.data.data.map(p => ({
+          _id: p._id,
+          id: p._id,
+          name: p.clientName,
+          email: p.clientEmail,
+          subject: `Project Inquiry: ${p.serviceRequested}`,
+          service: p.serviceRequested,
+          category: 'SERVICE_INQUIRY',
+          message: p.projectDetails,
+          status: (p.status || 'NEW').toUpperCase(),
+          date: p.createdAt ? new Date(p.createdAt).toLocaleString() : 'Recent'
+        }));
+        combined = [...combined, ...mappedProj];
+      }
+
+      if (jobRes.status === 'fulfilled' && jobRes.value?.data?.data) {
+        const mappedJobs = jobRes.value.data.data.map(j => ({
+          _id: j._id,
+          id: j._id,
+          name: j.candidateName,
+          email: j.candidateEmail,
+          subject: `Job Application: ${j.jobTitle}`,
+          service: j.jobTitle,
+          category: 'JOB_APPLICATION',
+          message: `Portfolio Link: ${j.portfolioLink}\nCover Note: ${j.coverNote}`,
+          status: (j.status || 'NEW').toUpperCase(),
+          date: j.createdAt ? new Date(j.createdAt).toLocaleString() : 'Recent'
+        }));
+        combined = [...combined, ...mappedJobs];
+      }
+
+      if (contactsRes.status === 'fulfilled' && contactsRes.value?.data?.data) {
+        const mappedContacts = contactsRes.value.data.data.map(c => ({
+          ...c,
+          id: c._id || c.id,
+          status: (c.status || 'NEW').toUpperCase()
+        }));
+        combined = [...combined, ...mappedContacts];
+      }
+
+      if (combined.length > 0) {
+        localStorage.setItem('ss_contacts', JSON.stringify(combined));
         localStorage.setItem('ss_contacts_init', 'true');
-        return res.data;
+        return { data: combined };
       }
     } catch (err) {}
+
     const init = localStorage.getItem('ss_contacts_init');
     if (!init) {
       localStorage.setItem('ss_contacts', JSON.stringify(initialMockInquiries));

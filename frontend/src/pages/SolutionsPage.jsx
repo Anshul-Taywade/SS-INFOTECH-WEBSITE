@@ -53,6 +53,6 @@ export default function SolutionsPage() {
         <CTABanner />
       </div>
 
-      </main>
+    </main>
   );
 }

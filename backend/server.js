@@ -12,6 +12,8 @@ const { notFound, errorHandler } = require('./middleware/error.middleware');
 // Route imports
 const authRoutes = require('./routes/auth.routes');
 const contactRoutes = require('./routes/contact.routes');
+const projectInquiryRoutes = require('./routes/projectInquiry.routes');
+const jobApplicationRoutes = require('./routes/jobApplication.routes');
 const newsletterRoutes = require('./routes/newsletter.routes');
 const serviceRoutes = require('./routes/service.routes');
 const projectRoutes = require('./routes/project.routes');
@@ -72,6 +74,8 @@ app.get('/api/v1/health', (req, res) => {
 // API Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/contacts', contactRoutes);
+app.use('/api/v1/project-inquiries', projectInquiryRoutes);
+app.use('/api/v1/job-applications', jobApplicationRoutes);
 app.use('/api/v1/newsletter', newsletterRoutes);
 app.use('/api/v1/services', serviceRoutes);
 app.use('/api/v1/projects', projectRoutes);

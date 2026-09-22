@@ -6,40 +6,49 @@ const Project = require('./models/Project.model');
 const Testimonial = require('./models/Testimonial.model');
 const Partner = require('./models/Partner.model');
 const Career = require('./models/Career.model');
+const ProjectInquiry = require('./models/ProjectInquiry.model');
+const JobApplication = require('./models/JobApplication.model');
+const Newsletter = require('./models/Newsletter.model');
 
 const initialServices = [
   {
     title: 'Website Development',
+    slug: 'website-development',
     description: 'We build fast, responsive and SEO-friendly websites that drive results.',
     icon: 'Code',
     order: 1,
   },
   {
     title: 'Mobile App Development',
+    slug: 'mobile-app-development',
     description: 'We create powerful mobile applications for Android and iOS platforms.',
     icon: 'Smartphone',
     order: 2,
   },
   {
     title: 'App Development',
+    slug: 'app-development',
     description: 'Custom app applications that cater to your business objectives.',
     icon: 'Layout',
     order: 3,
   },
   {
     title: 'Machine Learning & AI',
+    slug: 'machine-learning-ai',
     description: 'Smart AI solutions to automate processes and improve efficiency.',
     icon: 'Brain',
     order: 4,
   },
   {
     title: 'Digital Marketing',
+    slug: 'digital-marketing',
     description: 'Boost your online presence with data-driven digital marketing strategies.',
     icon: 'Megaphone',
     order: 5,
   },
   {
     title: 'Integration Services',
+    slug: 'integration-services',
     description: 'Seamless integration of third-party APIs and enterprise solutions.',
     icon: 'Wifi',
     order: 6,
@@ -142,13 +151,21 @@ const seedDB = async () => {
     await mongoose.connect(env.MONGO_URI);
     console.log('🌱 Connected to MongoDB for seeding...');
 
-    // Clear existing collections
+    // Clear existing collections & drop old unused ones
+    const oldCollections = ['contacts', 'newsletters', 'activitylogs', 'teams'];
+    for (const colName of oldCollections) {
+      try { await mongoose.connection.db.dropCollection(colName); } catch (e) {}
+    }
+
     await User.deleteMany();
-    await Service.deleteMany();
+    try { await Service.collection.drop(); } catch (e) {}
     await Project.deleteMany();
     await Testimonial.deleteMany();
     await Partner.deleteMany();
     await Career.deleteMany();
+    await ProjectInquiry.deleteMany();
+    await JobApplication.deleteMany();
+    await Newsletter.deleteMany();
 
     // Create Default Super Admin
     const admin = await User.create({
@@ -174,6 +191,30 @@ const seedDB = async () => {
 
     await Career.insertMany(initialCareers);
     console.log(`✅ ${initialCareers.length} Careers seeded.`);
+
+    await ProjectInquiry.create({
+      clientName: 'Rajesh Sharma',
+      clientEmail: 'rajesh@enterprise.com',
+      serviceRequested: 'Cloud Architecture & Web App',
+      projectDetails: 'Requirement for high-concurrency cloud architecture migration for enterprise SaaS platform.',
+      status: 'New',
+    });
+    console.log(`✅ 1 Project Inquiry seeded to project_inquiries.`);
+
+    await JobApplication.create({
+      candidateName: 'Anil Kumar',
+      candidateEmail: 'anil@dev.com',
+      jobTitle: 'Senior Full Stack Engineer',
+      portfolioLink: 'https://github.com/anil-dev',
+      coverNote: '5+ years experience with React, Next.js, Node.js and MongoDB.',
+      status: 'New',
+    });
+    console.log(`✅ 1 Job Application seeded to job_applications.`);
+
+    await Newsletter.create({
+      email: 'subscriber@ssinfotech.org',
+    });
+    console.log(`✅ 1 Subscriber seeded to newsletter_subscribers.`);
 
     console.log('\n🎉 Database Seeded Successfully!');
     process.exit(0);

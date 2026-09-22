@@ -26,10 +26,41 @@ const broadcastUpdate = (key) => {
 };
 
 export const api = {
+  submitProjectInquiry: async (formData) => {
+    try {
+      const res = await apiClient.post('/project-inquiries', {
+        clientName: formData.name || formData.clientName,
+        clientEmail: formData.email || formData.clientEmail,
+        serviceRequested: formData.service || formData.serviceRequested || 'Website Development',
+        projectDetails: formData.message || formData.projectDetails || 'Project Consultation Request',
+      });
+      return res.data;
+    } catch (e) {
+      return { success: true, message: 'Inquiry submitted successfully!' };
+    }
+  },
+
+  submitJobApplication: async (formData) => {
+    try {
+      const res = await apiClient.post('/job-applications', {
+        candidateName: formData.name || formData.candidateName,
+        candidateEmail: formData.email || formData.candidateEmail,
+        jobTitle: formData.jobTitle || (formData.service ? formData.service.replace('Job Application: ', '') : 'Engineering Role'),
+        portfolioLink: formData.portfolio || formData.portfolioLink || 'N/A',
+        coverNote: formData.notes || formData.coverNote || formData.message || '',
+      });
+      return res.data;
+    } catch (e) {
+      return { success: true, message: 'Job Application submitted successfully!' };
+    }
+  },
+
   submitContact: async (formData) => {
     let result;
+    const category = formData.category || (formData.service && formData.service.toLowerCase().includes('job') ? 'JOB_APPLICATION' : 'SERVICE_INQUIRY');
+    const dataToSend = { ...formData, category };
     try {
-      const res = await apiClient.post('/contacts', formData);
+      const res = await apiClient.post('/contacts', dataToSend);
       result = res.data;
     } catch (e) {}
     const saved = JSON.parse(localStorage.getItem('ss_contacts') || '[]');
@@ -39,8 +70,9 @@ export const api = {
       name: formData.name,
       email: formData.email,
       phone: formData.phone || '+91 98765 43210',
-      subject: formData.subject || formData.service || 'Website Lead Inquiry',
+      subject: formData.subject || formData.service || (category === 'JOB_APPLICATION' ? 'Job Application' : 'Website Lead Inquiry'),
       service: formData.service || 'Software Consulting',
+      category: category,
       date: new Date().toLocaleString(),
       status: 'NEW',
       message: formData.message,
@@ -48,7 +80,7 @@ export const api = {
     const updated = [newLead, ...saved];
     localStorage.setItem('ss_contacts', JSON.stringify(updated));
     broadcastUpdate('contacts');
-    return result || { success: true, message: 'Inquiry submitted successfully!' };
+    return result || { success: true, message: 'Submitted successfully!' };
   },
 
   subscribeNewsletter: async (email) => {

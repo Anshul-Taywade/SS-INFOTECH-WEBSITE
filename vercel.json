@@ -76,7 +76,14 @@
       "dest": "/frontend/img/$1"
     },
     {
-      "src": "/(.*\\.(?:ico|png|jpg|jpeg|svg|webp|gif|json|xml|txt|webmanifest|woff|woff2|ttf|eot))",
+      "src": "/videos/(.*)",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "dest": "/frontend/videos/$1"
+    },
+    {
+      "src": "/(.*\\.(?:ico|png|jpg|jpeg|svg|webp|gif|json|xml|txt|webmanifest|woff|woff2|ttf|eot|mp4|webm|ogv))",
       "headers": {
         "cache-control": "public, max-age=31536000, immutable"
       },

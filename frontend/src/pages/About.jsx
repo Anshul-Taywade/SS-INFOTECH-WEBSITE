@@ -2,23 +2,24 @@ import CTABanner from '@/components/CTABanner';
 import TrustedBy from '@/components/TrustedBy';
 import { motion } from 'framer-motion';
 import { 
-  Award, ShieldCheck, Target, Eye, Heart, Compass, Users, 
-  CheckCircle2, Globe2, Cpu, Zap, ArrowRight, Building2, Sparkles 
+  ShieldCheck, Target, Eye, Heart, 
+  Globe2, ArrowRight, Building2, Sparkles 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen w-full overflow-x-hidden flex flex-col bg-bg text-text font-sans selection:bg-primary selection:text-white transition-colors duration-300">
-      {/* Header Banner */}
-      <section className="relative pt-36 pb-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto overflow-hidden text-center">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 blur-[160px] rounded-full pointer-events-none -z-10" />
+      {/* Header Hero Card */}
+      <section className="relative isolate mx-auto mt-6 mb-4 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-6 py-14 sm:px-12 md:py-20 text-center shadow-lg shadow-purple-900/5 transition-colors duration-500">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 dark:bg-purple-600/25 blur-[160px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none -z-10" />
         
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-purple-950/80 border border-purple-200/90 dark:border-purple-800 text-purple-950 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4 shadow-sm backdrop-blur-md"
         >
           <Building2 size={14} className="text-purple-600 dark:text-purple-400" />
           <span>Corporate Overview</span>
@@ -44,7 +45,7 @@ export default function AboutPage() {
       </section>
 
       {/* Main Corporate Story */}
-      <section className="py-16 md:py-24 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+      <section className="py-14 md:py-18 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
           <motion.div 
@@ -115,7 +116,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission, Vision & Core Values */}
-      <section className="py-20 px-6 md:px-12 lg:px-16 xl:px-20 bg-purple-50/50 dark:bg-slate-950/60 border-y border-purple-100 dark:border-slate-800">
+      <section className="py-14 md:py-18 px-6 md:px-12 lg:px-16 xl:px-20 bg-purple-50/50 dark:bg-slate-950/60 border-y border-purple-100 dark:border-slate-800">
         <div className="w-full max-w-[1400px] mx-auto space-y-16">
           <div className="text-center max-w-2xl mx-auto space-y-3">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white font-outfit">
@@ -160,8 +161,10 @@ export default function AboutPage() {
         </div>
       </section>
 
+
+
       {/* Life & Culture Showcase featuring Real Photos */}
-      <section className="py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+      <section className="py-14 md:py-18 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto border-t border-purple-100 dark:border-slate-800">
         <div className="space-y-12">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
@@ -219,7 +222,7 @@ export default function AboutPage() {
                     alt={item.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
-                      e.currentTarget.src = '/img/hero-mockup.png';
+                      e.currentTarget.src = '/images/gallery/ss-infotech-classroom-session-1.jpg';
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -246,6 +249,6 @@ export default function AboutPage() {
         <CTABanner />
       </div>
 
-      </main>
+    </main>
   );
 }

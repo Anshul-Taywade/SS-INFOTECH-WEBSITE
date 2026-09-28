@@ -1,41 +1,53 @@
 import { useState } from 'react';
 import { useAdminTheme } from '@/context/AdminThemeContext';
 import { 
-  Bell, Search, User, Sparkles, CheckCircle2, Shield, Moon, Sun, ChevronDown 
+  Bell, Search, Moon, Sun, ChevronDown, Menu 
 } from 'lucide-react';
 
-export default function AdminHeader({ title = 'Dashboard Overview' }) {
-  const { isDarkMode, toggleTheme, setUserModalOpen } = useAdminTheme();
+export default function AdminHeader({ title = 'Admin Dashboard' }) {
+  const { isDarkMode, toggleTheme, setUserModalOpen, toggleSidebar } = useAdminTheme();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   return (
-    <header className={`h-20 border-b px-6 flex items-center justify-between sticky top-0 z-30 font-outfit transition-colors duration-300 ${
+    <header className={`h-20 border-b px-4 sm:px-6 flex items-center justify-between sticky top-0 z-30 font-outfit transition-colors duration-300 ${
       isDarkMode 
-        ? 'bg-slate-900/90 border-slate-800 text-white' 
-        : 'bg-white/90 border-slate-200 text-slate-900 shadow-sm'
+        ? 'bg-slate-900/90 border-slate-800 text-white backdrop-blur-md' 
+        : 'bg-white/90 border-slate-200 text-slate-900 shadow-sm backdrop-blur-md'
     }`}>
       
-      {/* Title & Status */}
-      <div className="flex items-center gap-4">
+      {/* Title & Mobile Toggle */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={toggleSidebar}
+          className={`lg:hidden p-2 rounded-xl border transition-colors cursor-pointer ${
+            isDarkMode 
+              ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' 
+              : 'bg-slate-100 border-slate-200 text-slate-800 hover:bg-slate-200'
+          }`}
+          title="Toggle Navigation Menu"
+        >
+          <Menu size={20} />
+        </button>
+
         <div>
-          <h2 className={`text-xl font-black font-outfit tracking-tight flex items-center gap-2 ${
+          <h2 className={`text-lg sm:text-xl font-black font-outfit tracking-tight flex items-center gap-2 ${
             isDarkMode ? 'text-white' : 'text-slate-900'
           }`}>
             <span>{title}</span>
           </h2>
-          <p className="text-xs text-slate-500 font-medium font-jakarta">SS Infotech Central Administration</p>
+          <p className="text-[11px] sm:text-xs text-slate-500 font-medium font-jakarta">SS Infotech Management Portal</p>
         </div>
       </div>
 
       {/* Search Bar & Actions */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 sm:gap-4">
         
         {/* Search */}
         <div className="relative hidden md:block">
           <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Search gallery, inquiries, settings..."
+            placeholder="Search leads, services, photos..."
             className={`w-64 pl-10 pr-4 py-2 rounded-xl text-xs placeholder-slate-400 focus:outline-none focus:border-purple-500 font-jakarta border transition-colors ${
               isDarkMode 
                 ? 'bg-slate-950 border-slate-800 text-slate-200' 
@@ -56,7 +68,7 @@ export default function AdminHeader({ title = 'Dashboard Overview' }) {
         >
           {isDarkMode ? (
             <>
-              <Sun size={18} className="text-amber-400 animate-spin-slow" />
+              <Sun size={18} className="text-amber-400" />
               <span className="hidden sm:inline font-extrabold">Light Mode</span>
             </>
           ) : (
@@ -87,12 +99,12 @@ export default function AdminHeader({ title = 'Dashboard Overview' }) {
             }`}>
               <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-2">
                 <span className="font-extrabold">Notifications</span>
-                <span className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 text-[10px] font-bold">3 Unread</span>
+                <span className="px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 text-[10px] font-bold">Live Updates Active</span>
               </div>
               <div className="space-y-2">
                 <div className={`p-2.5 rounded-xl border ${isDarkMode ? 'bg-slate-800/80 border-slate-700/60' : 'bg-purple-50/70 border-purple-100'}`}>
-                  <p className="font-bold">15 Real Photos Synced</p>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">All gallery media updated with official SS Infotech photos.</p>
+                  <p className="font-bold">Live Website Sync Enabled</p>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">All gallery, services, and inquiry edits sync in real-time.</p>
                 </div>
                 <div className={`p-2.5 rounded-xl border ${isDarkMode ? 'bg-slate-800/80 border-slate-700/60' : 'bg-purple-50/70 border-purple-100'}`}>
                   <p className="font-bold">New Client Inquiry</p>

@@ -30,12 +30,12 @@ const features = [
 
 export default function WhyChooseUs() { 
   return (
-    <section className="relative py-24 md:py-32 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+    <section className="relative py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
       {/* Background Glow */}
       <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] bg-purple-600/15 dark:bg-purple-600/25 blur-[150px] rounded-full pointer-events-none -z-10" />
 
       {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <div className="text-center max-w-3xl mx-auto mb-12 md:mb-14 space-y-4">
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}

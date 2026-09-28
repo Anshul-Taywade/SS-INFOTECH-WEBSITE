@@ -14,8 +14,8 @@ const logos = [
 
 export default function TrustedBy() {
   return (
-    <section className="relative w-full py-16 overflow-hidden border-y border-purple-100/60 dark:border-slate-800 bg-purple-50/40 dark:bg-slate-950/60">
-      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 lg:px-16 mb-8 text-center">
+    <section className="relative w-full py-10 md:py-12 overflow-hidden border-y border-purple-100/60 dark:border-slate-800 bg-purple-50/40 dark:bg-slate-950/60">
+      <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 lg:px-16 mb-6 text-center">
         <div className="inline-flex items-center gap-2 text-xs font-extrabold tracking-widest uppercase text-purple-950 dark:text-purple-300 font-jakarta">
           <Building2 size={15} className="text-purple-600 dark:text-purple-400" />
           <span>Trusted By Global Industry Leaders</span>

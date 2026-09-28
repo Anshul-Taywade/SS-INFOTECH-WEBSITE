@@ -5,9 +5,14 @@ const AdminThemeContext = createContext();
 export function AdminThemeProvider({ children }) {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [userModalOpen, setUserModalOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleTheme = () => {
     setIsDarkMode((prev) => !prev);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
   };
 
   return (
@@ -16,7 +21,10 @@ export function AdminThemeProvider({ children }) {
       setIsDarkMode, 
       toggleTheme,
       userModalOpen,
-      setUserModalOpen
+      setUserModalOpen,
+      isSidebarOpen,
+      setIsSidebarOpen,
+      toggleSidebar
     }}>
       <div className={isDarkMode ? 'dark-admin' : 'light-admin'}>
         {children}

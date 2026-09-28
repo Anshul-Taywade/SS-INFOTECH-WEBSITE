@@ -8,12 +8,13 @@ const ApiResponse = require('../utils/apiResponse');
  */
 exports.createContact = async (req, res, next) => {
   try {
-    const { name, email, service, message } = req.body;
+    const { name, email, service, category, message } = req.body;
 
     const contact = await Contact.create({
       name,
       email,
       service: service || 'Website Development',
+      category: category || (service && service.toLowerCase().includes('job') ? 'JOB_APPLICATION' : 'SERVICE_INQUIRY'),
       message,
     });
 

@@ -8,7 +8,7 @@ export default function CTABanner() {
       initial={{ opacity: 0, scale: 0.96 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      className="relative rounded-3xl p-8 sm:p-12 lg:p-16 flex flex-col lg:flex-row items-center justify-between gap-8 bg-gradient-to-r from-purple-100/90 via-purple-50 to-fuchsia-100/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border border-purple-200/80 dark:border-slate-800 shadow-2xl text-slate-900 dark:text-white overflow-hidden font-outfit transition-colors duration-300"
+      className="relative rounded-3xl p-8 sm:p-12 lg:p-14 flex flex-col lg:flex-row items-center justify-between gap-8 bg-gradient-to-r from-purple-100/90 via-purple-50 to-fuchsia-100/90 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-950 border border-purple-200/80 dark:border-slate-800 shadow-2xl text-slate-900 dark:text-white overflow-hidden font-outfit transition-colors duration-300"
     >
       {/* Background ambient lighting */}
       <div className="absolute -left-20 -bottom-20 w-96 h-96 bg-purple-300/30 dark:bg-purple-600/20 blur-[100px] rounded-full pointer-events-none -z-10" />

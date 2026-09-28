@@ -12,6 +12,8 @@ const { notFound, errorHandler } = require('./middleware/error.middleware');
 // Route imports
 const authRoutes = require('./routes/auth.routes');
 const contactRoutes = require('./routes/contact.routes');
+const projectInquiryRoutes = require('./routes/projectInquiry.routes');
+const jobApplicationRoutes = require('./routes/jobApplication.routes');
 const newsletterRoutes = require('./routes/newsletter.routes');
 const serviceRoutes = require('./routes/service.routes');
 const projectRoutes = require('./routes/project.routes');
@@ -19,6 +21,10 @@ const testimonialRoutes = require('./routes/testimonial.routes');
 const partnerRoutes = require('./routes/partner.routes');
 const careerRoutes = require('./routes/career.routes');
 const dashboardRoutes = require('./routes/dashboard.routes');
+const galleryRoutes = require('./routes/gallery.routes');
+const teamRoutes = require('./routes/team.routes');
+const settingsRoutes = require('./routes/settings.routes');
+const activityLogRoutes = require('./routes/activityLog.routes');
 
 // Initialize app
 const app = express();
@@ -82,6 +88,8 @@ app.get('/api/v1/health', (req, res) => {
 // API Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/contacts', contactRoutes);
+app.use('/api/v1/project-inquiries', projectInquiryRoutes);
+app.use('/api/v1/job-applications', jobApplicationRoutes);
 app.use('/api/v1/newsletter', newsletterRoutes);
 app.use('/api/v1/services', serviceRoutes);
 app.use('/api/v1/projects', projectRoutes);
@@ -89,6 +97,10 @@ app.use('/api/v1/testimonials', testimonialRoutes);
 app.use('/api/v1/partners', partnerRoutes);
 app.use('/api/v1/careers', careerRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
+app.use('/api/v1/gallery', galleryRoutes);
+app.use('/api/v1/team', teamRoutes);
+app.use('/api/v1/settings', settingsRoutes);
+app.use('/api/v1/activity-logs', activityLogRoutes);
 
 // 1. Serve Admin Application at /admin
 const adminDistPath = path.join(__dirname, '../admin/dist');

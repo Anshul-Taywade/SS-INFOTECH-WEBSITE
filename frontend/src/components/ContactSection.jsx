@@ -4,7 +4,7 @@ import { Mail, Phone, MapPin, Send, CheckCircle2, MessageSquare, Clock, Sparkles
 import CTABanner from './CTABanner';
 import { api } from '@/services/api';
 
-export default function ContactSection() {
+export default function ContactSection({ hideCTABanner = false, hideHeader = false }) {
   const [formState, setFormState] = useState({ name: '', email: '', service: 'Website Development', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -15,6 +15,7 @@ export default function ContactSection() {
     setIsSubmitting(true);
     setErrorMessage('');
     try {
+      await api.submitProjectInquiry(formState);
       await api.submitContact(formState);
       setSubmitted(true);
       setFormState({ name: '', email: '', service: 'Website Development', message: '' });
@@ -31,18 +32,19 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="relative py-24 md:py-32 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto space-y-16">
+    <section id="contact" className="relative py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto space-y-12">
       {/* Background Radial Glow */}
       <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-purple-600/15 dark:bg-purple-600/25 blur-[170px] rounded-full pointer-events-none -z-10" />
 
       {/* CTA Banner integration */}
-      <CTABanner />
+      {!hideCTABanner && <CTABanner />}
 
       {/* Contact Grid Section */}
-      <div id="consultation-section" className="pt-8 scroll-mt-28">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
+      <div id="consultation-section" className="pt-2 scroll-mt-28">
+        {!hideHeader && (
+          <div className="text-center max-w-3xl mx-auto mb-12 md:mb-14 space-y-4">
+            <motion.div 
+              initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta"
@@ -71,6 +73,7 @@ export default function ContactSection() {
             Have a project in mind or need expert software engineering consultation? Reach out directly to our solution architects.
           </motion.p>
         </div>
+      )}
 
         <div className="grid lg:grid-cols-5 gap-8 items-start">
           

@@ -6,15 +6,16 @@ import { Link } from 'react-router-dom';
 export default function ContactPage() {
   return (
     <main className="min-h-screen w-full overflow-x-hidden flex flex-col bg-bg text-text font-sans selection:bg-primary selection:text-white transition-colors duration-300">
-      {/* Contact Header Banner */}
-      <section className="relative pt-36 pb-12 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto overflow-hidden text-center">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 blur-[160px] rounded-full pointer-events-none -z-10" />
+      {/* Contact Header Hero Card */}
+      <section className="relative isolate mx-auto mt-6 mb-4 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-6 py-14 sm:px-12 md:py-20 text-center shadow-lg shadow-purple-900/5 transition-colors duration-500">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 dark:bg-purple-600/25 blur-[160px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none -z-10" />
         
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-purple-950/80 border border-purple-200/90 dark:border-purple-800 text-purple-950 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4 shadow-sm backdrop-blur-md"
         >
           <MessageSquare size={14} className="text-purple-600 dark:text-purple-400" />
           <span>Get In Touch</span>
@@ -40,10 +41,10 @@ export default function ContactPage() {
       </section>
 
       {/* Main Contact Section Component */}
-      <ContactSection />
+      <ContactSection hideCTABanner={true} hideHeader={true} />
 
       {/* FAQ Section */}
-      <section className="py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
+      <section className="py-14 md:py-18 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto">
         <div className="text-center max-w-2xl mx-auto space-y-3 mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 text-xs font-extrabold font-jakarta uppercase">
             <HelpCircle size={14} />

@@ -2,11 +2,10 @@ import { useState, useEffect } from 'react';
 import CTABanner from '@/components/CTABanner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Camera, X, ChevronLeft, ChevronRight, Filter, 
-  Building2, Users, Award, Calendar, Sparkles, Image as ImageIcon 
+  Camera, X, ChevronLeft, ChevronRight, Image as ImageIcon,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { REAL_COMPANY_GALLERY_ITEMS } from '@/components/galleryData';
+import { api } from '@/services/api';
 
 const categories = [
   'All',
@@ -18,26 +17,14 @@ const categories = [
 ];
 
 export default function GalleryPage() {
-  const [items, setItems] = useState(() => {
-    try {
-      const saved = localStorage.getItem('ss_gallery_items');
-      return saved ? JSON.parse(saved) : REAL_COMPANY_GALLERY_ITEMS;
-    } catch (e) {
-      return REAL_COMPANY_GALLERY_ITEMS;
-    }
-  });
-
+  const [items, setItems] = useState(REAL_COMPANY_GALLERY_ITEMS);
   const [activeCategory, setActiveCategory] = useState('All');
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   useEffect(() => {
-    const handleUpdate = () => {
-      try {
-        const saved = localStorage.getItem('ss_gallery_items');
-        if (saved) setItems(JSON.parse(saved));
-      } catch (e) {}
-    };
+    loadGallery();
 
+    const handleUpdate = () => loadGallery();
     window.addEventListener('ss_gallery_updated', handleUpdate);
     window.addEventListener('storage', handleUpdate);
     return () => {
@@ -45,6 +32,17 @@ export default function GalleryPage() {
       window.removeEventListener('storage', handleUpdate);
     };
   }, []);
+
+  const loadGallery = async () => {
+    try {
+      const res = await api.getGallery();
+      if (res && res.data && res.data.length > 0) {
+        setItems(res.data);
+      }
+    } catch (e) {
+      console.warn('Gallery fallback active');
+    }
+  };
 
   const filteredItems = activeCategory === 'All'
     ? items
@@ -77,15 +75,16 @@ export default function GalleryPage() {
 
   return (
     <main className="min-h-screen w-full overflow-x-hidden flex flex-col bg-bg text-text font-sans selection:bg-primary selection:text-white transition-colors duration-300">
-      {/* Gallery Header Banner */}
-      <section className="relative pt-36 pb-16 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto overflow-hidden text-center">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 blur-[160px] rounded-full pointer-events-none -z-10" />
+      {/* Gallery Header Hero Card */}
+      <section className="relative isolate mx-auto mt-6 mb-4 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-6 py-14 sm:px-12 md:py-20 text-center shadow-lg shadow-purple-900/5 transition-colors duration-500">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 dark:bg-purple-600/25 blur-[160px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none -z-10" />
         
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/80 border border-purple-300/60 dark:border-purple-800 text-purple-900 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4"
+          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-purple-950/80 border border-purple-200/90 dark:border-purple-800 text-purple-950 dark:text-purple-300 text-xs font-extrabold uppercase tracking-wider font-jakarta mb-4 shadow-sm backdrop-blur-md"
         >
           <Camera size={14} className="text-purple-600 dark:text-purple-400" />
           <span>Life at SS Infotech</span>
@@ -111,7 +110,7 @@ export default function GalleryPage() {
       </section>
 
       {/* Category Filter Tabs */}
-      <section className="px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto mb-12">
+      <section className="px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto mb-10">
         <div className="flex flex-wrap justify-center gap-2.5 font-jakarta">
           {categories.map((cat) => (
             <button
@@ -133,7 +132,7 @@ export default function GalleryPage() {
       </section>
 
       {/* Photo Grid */}
-      <section className="px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto mb-20 flex-grow">
+      <section className="px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto mb-16 md:mb-20 flex-grow">
         <motion.div 
           layout
           className="columns-1 sm:columns-2 md:columns-3 gap-6 space-y-6"
@@ -141,7 +140,7 @@ export default function GalleryPage() {
           <AnimatePresence>
             {filteredItems.map((item, idx) => (
               <GalleryCard
-                key={item.id}
+                key={item.id || item._id}
                 item={item}
                 idx={idx}
                 onClick={() => setLightboxIndex(idx)}

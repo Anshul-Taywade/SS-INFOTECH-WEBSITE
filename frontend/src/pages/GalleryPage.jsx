@@ -17,14 +17,27 @@ const categories = [
 ];
 
 export default function GalleryPage() {
-  const [items, setItems] = useState(REAL_COMPANY_GALLERY_ITEMS);
+  const [items, setItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ss_gallery_items');
+      const synced = localStorage.getItem('ss_gallery_synced');
+      if (saved) return JSON.parse(saved);
+      if (synced === 'true') return [];
+    } catch (e) {}
+    return REAL_COMPANY_GALLERY_ITEMS;
+  });
   const [activeCategory, setActiveCategory] = useState('All');
   const [lightboxIndex, setLightboxIndex] = useState(null);
 
   useEffect(() => {
     loadGallery();
 
-    const handleUpdate = () => loadGallery();
+    const handleUpdate = () => {
+      try {
+        const saved = localStorage.getItem('ss_gallery_items');
+        if (saved) setItems(JSON.parse(saved));
+      } catch (e) {}
+    };
     window.addEventListener('ss_gallery_updated', handleUpdate);
     window.addEventListener('storage', handleUpdate);
     return () => {
@@ -36,7 +49,7 @@ export default function GalleryPage() {
   const loadGallery = async () => {
     try {
       const res = await api.getGallery();
-      if (res && res.data && res.data.length > 0) {
+      if (res && Array.isArray(res.data)) {
         setItems(res.data);
       }
     } catch (e) {

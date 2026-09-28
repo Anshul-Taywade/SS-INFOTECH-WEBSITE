@@ -342,13 +342,21 @@ export const api = {
   getGallery: async () => {
     try {
       const res = await apiClient.get('/gallery');
-      if (res.data && res.data.data && res.data.data.length > 0) {
+      if (res.data && Array.isArray(res.data.data)) {
         localStorage.setItem('ss_gallery_items', JSON.stringify(res.data.data));
+        localStorage.setItem('ss_gallery_synced', 'true');
         return res.data;
       }
     } catch (e) {}
     const saved = localStorage.getItem('ss_gallery_items');
-    return { data: saved ? JSON.parse(saved) : REAL_COMPANY_GALLERY_ITEMS };
+    const synced = localStorage.getItem('ss_gallery_synced');
+    if (saved) {
+      return { data: JSON.parse(saved) };
+    }
+    if (synced === 'true') {
+      return { data: [] };
+    }
+    return { data: REAL_COMPANY_GALLERY_ITEMS };
   },
   createGalleryItem: async (data) => {
     let result;
@@ -392,8 +400,9 @@ export const api = {
       await apiClient.delete(`/gallery/${id}`);
     } catch (e) {}
     const saved = JSON.parse(localStorage.getItem('ss_gallery_items') || JSON.stringify(REAL_COMPANY_GALLERY_ITEMS));
-    const updated = saved.filter(item => item._id !== id && item.id !== id);
+    const updated = saved.filter(item => item._id !== id && item.id !== id && item.customId !== id);
     localStorage.setItem('ss_gallery_items', JSON.stringify(updated));
+    localStorage.setItem('ss_gallery_synced', 'true');
     broadcastUpdate('gallery');
     api.logActivity({
       title: `Gallery Photo Removed by Admin`,

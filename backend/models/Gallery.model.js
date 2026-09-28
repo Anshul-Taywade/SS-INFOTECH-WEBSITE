@@ -35,6 +35,11 @@ const gallerySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    customId: {
+      type: String,
+      default: null,
+      index: true,
+    },
   },
   {
     timestamps: true,

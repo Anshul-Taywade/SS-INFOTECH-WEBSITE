@@ -1,11 +1,271 @@
+const mongoose = require('mongoose');
 const Gallery = require('../models/Gallery.model');
+
+const defaultGallerySeed = [
+  {
+    customId: "real-1",
+    title: "SS Infotech Tech Seminar & Classroom Session",
+    category: "Training & Workshops",
+    date: "2024",
+    location: "SS Infotech Learning Center",
+    caption: "Live technical training and developer upskilling session on web architecture and modern software stack at SS Infotech.",
+    imgSrc: "/images/gallery/ss-infotech-classroom-session-1.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-2",
+    title: "Enterprise Cloud & Tech Team Collaboration",
+    category: "Office Environment",
+    date: "2024",
+    location: "Software R&D Hub",
+    caption: "Cross-functional engineering team collaborating on cloud architecture, microservices, and network infrastructure.",
+    imgSrc: "/images/gallery/ss-infotech-tech-team-collaboration.png",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-3",
+    title: "Senior Software Specialist & Team Leadership",
+    category: "Team Activities",
+    date: "2024",
+    location: "SS Infotech Headquarters",
+    caption: "Dedicated technology leader driving software engineering excellence, agile delivery, and client success.",
+    imgSrc: "/images/gallery/ss-infotech-team-lead-1.jpg",
+    aspect: "aspect-square",
+    isReal: true
+  },
+  {
+    customId: "real-4",
+    title: "Executive Leadership & Technology Strategy",
+    category: "Team Activities",
+    date: "2024",
+    location: "Executive Suite",
+    caption: "Executive management setting strategic direction, enterprise compliance, and product roadmap innovation.",
+    imgSrc: "/images/gallery/ss-infotech-executive-leader.jpg",
+    aspect: "aspect-square",
+    isReal: true
+  },
+  {
+    customId: "real-5",
+    title: "Interactive Engineering Workshop & Seminar",
+    category: "Training & Workshops",
+    date: "2024",
+    location: "Innovation & Training Lab",
+    caption: "Engaging classroom training workshop demonstrating live system design, database management, and code reviews.",
+    imgSrc: "/images/gallery/ss-infotech-live-workshop-session.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-6",
+    title: "Data Analytics & Power BI Sales Seminar",
+    category: "Training & Workshops",
+    date: "2024",
+    location: "SS Infotech Analytics Lab",
+    caption: "In-depth data visualization and business intelligence workshop presenting real-world sales dashboard analytics.",
+    imgSrc: "/images/gallery/ss-infotech-data-analytics-presentation.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-7",
+    title: "Executive Boardroom & Conference Suite",
+    category: "Office Environment",
+    date: "2024",
+    location: "Corporate Boardroom",
+    caption: "State-of-the-art conference boardroom equipped for high-level enterprise client meetings and strategic planning.",
+    imgSrc: "/images/gallery/ss-infotech-conference-boardroom.png",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-8",
+    title: "Placement Hall of Fame & Corporate Office Desk",
+    category: "Office Environment",
+    date: "2024",
+    location: "SS Infotech Main Office",
+    caption: "SS Infotech office desk featuring ISO certification trophies, course modules, and alumni success placement wall.",
+    imgSrc: "/images/gallery/ss-infotech-reception-office.png",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-9",
+    title: "Executive Client Lounge & Reception Lounge",
+    category: "Office Environment",
+    date: "2024",
+    location: "SS Infotech Reception Suite",
+    caption: "Modern circular curved leather lounge seating designed for welcoming guests, clients, and project consultation.",
+    imgSrc: "/images/gallery/ss-infotech-lounge-reception.png",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-10",
+    title: "Live Web Development & HTML/CSS Coding Lecture",
+    category: "Training & Workshops",
+    date: "2024",
+    location: "Web Development Lab",
+    caption: "Instructor presenting live HTML5 code execution on smart TV screen to an interactive batch of web development trainees.",
+    imgSrc: "/images/gallery/ss-infotech-html-coding-lecture.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-11",
+    title: "Modern Corporate Open Workstation Floor",
+    category: "Office Environment",
+    date: "2024",
+    location: "SS Infotech R&D Open Floor",
+    caption: "Spacious open-plan workstation layout with ergonomic chairs, iMac systems, and glowing SS Infotech branding.",
+    imgSrc: "/images/gallery/ss-infotech-open-workspace-benches.png",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-12",
+    title: "Dedicated Developer Workstation Desks",
+    category: "Office Environment",
+    date: "2024",
+    location: "Software Engineering Studio",
+    caption: "Dual developer desks with code editors running on monitors and backlit SS Infotech corporate logo backdrop.",
+    imgSrc: "/images/gallery/ss-infotech-developer-workstations.png",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-13",
+    title: "Executive Magenta Reception Lounge Suite",
+    category: "Office Environment",
+    date: "2024",
+    location: "SS Infotech Executive Suite",
+    caption: "Premium reception lounge featuring plush velvet seating, ambient lighting, and illuminated SS Infotech wall sign.",
+    imgSrc: "/images/gallery/ss-infotech-executive-sofa-lounge.png",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-14",
+    title: "Individual Developer Cubicles & Coding Partitions",
+    category: "Office Environment",
+    date: "2024",
+    location: "Development Bay B",
+    caption: "Quiet focused coding partition desks where engineers build, test, and debug high-performance applications.",
+    imgSrc: "/images/gallery/ss-infotech-cubicle-workstations.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-15",
+    title: "Computer Workstation Lab & Activity Wall",
+    category: "Training & Workshops",
+    date: "2024",
+    location: "Learning Center Hallway",
+    caption: "Dedicated computer lab row featuring artificial turf green accent wall and corporate event activity bulletin board.",
+    imgSrc: "/images/gallery/ss-infotech-computer-lab-hallway.png",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-16",
+    title: "KDK College of Engineering Tech Seminar & Workshop Team",
+    category: "Company Events",
+    date: "2024",
+    location: "K.D.K. College of Engineering, Nagpur",
+    caption: "SS Infotech expert trainers and IETE student forum team at the 3-day Industry Skill Training workshop.",
+    imgSrc: "/images/gallery/ss-infotech-kdk-college-seminar-team.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-17",
+    title: "Industry Skill Training Certificate & Trophy Award Ceremony",
+    category: "Company Events",
+    date: "2024",
+    location: "K.D.K. College Auditorium, Nagpur",
+    caption: "SS Infotech leadership awarding certificates of merit and trophies to outstanding engineering workshop participants.",
+    imgSrc: "/images/gallery/ss-infotech-kdk-college-certificate-ceremony.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-18",
+    title: "Jhulelal Institute of Technology AI & Coding Seminar",
+    category: "Company Events",
+    date: "2024",
+    location: "Jhulelal Institute of Technology (JIT)",
+    caption: "SS Infotech founders presenting mementos during the Computer Science & AI Tech Seminar felicitations.",
+    imgSrc: "/images/gallery/ss-infotech-jit-college-memento-ceremony.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-19",
+    title: "Independence Day Office Ethnic Celebration",
+    category: "Cultural & Celebrations",
+    date: "2024",
+    location: "SS Infotech Corporate Lounge",
+    caption: "SS Infotech team members celebrating Independence Day in traditional attire with festive office decorations.",
+    imgSrc: "/images/gallery/ss-infotech-independence-day-ethnic.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-20",
+    title: "Traditional Festival & Cultural Pooja Celebration",
+    category: "Cultural & Celebrations",
+    date: "2024",
+    location: "SS Infotech Main Office Suite",
+    caption: "Annual corporate festival pooja celebration with team members dressed in Maharashtrian sarees, kurtas, and traditional wear.",
+    imgSrc: "/images/gallery/ss-infotech-traditional-festival-pooja.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-21",
+    title: "Independence Day Tri-Color Terrace Hand Paint Event",
+    category: "Cultural & Celebrations",
+    date: "2024",
+    location: "SS Infotech Terrace Sky Deck",
+    caption: "Team members showcasing patriotic tri-color hand prints (saffron, white, green) on the office terrace deck.",
+    imgSrc: "/images/gallery/ss-infotech-tricolor-handpaint-terrace.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  },
+  {
+    customId: "real-22",
+    title: "Grand Annual Cultural & Festive Gathering",
+    category: "Cultural & Celebrations",
+    date: "2024",
+    location: "SS Infotech Event Hall",
+    caption: "All employees and management gathering for festive celebrations, cultural programs, and team bonding.",
+    imgSrc: "/images/gallery/ss-infotech-grand-cultural-gathering.jpg",
+    aspect: "aspect-video",
+    isReal: true
+  }
+];
+
+let isInitialized = false;
 
 // @desc    Get all gallery items
 // @route   GET /api/v1/gallery
 // @access  Public
 exports.getGallery = async (req, res, next) => {
   try {
-    const items = await Gallery.find().sort({ createdAt: -1 });
+    let items = await Gallery.find().sort({ createdAt: -1 });
+
+    // Seed defaults into database if DB is completely empty and uninitialized
+    if (items.length === 0 && !isInitialized) {
+      try {
+        await Gallery.insertMany(defaultGallerySeed);
+        items = await Gallery.find().sort({ createdAt: -1 });
+      } catch (seedErr) {
+        console.warn('Auto-seed gallery fallback:', seedErr.message);
+      }
+      isInitialized = true;
+    }
+
     res.status(200).json({
       success: true,
       count: items.length,
@@ -21,7 +281,12 @@ exports.getGallery = async (req, res, next) => {
 // @access  Private/Admin
 exports.createGalleryItem = async (req, res, next) => {
   try {
-    const item = await Gallery.create(req.body);
+    const itemData = {
+      ...req.body,
+      customId: req.body.id || req.body.customId || `real-${Date.now()}`
+    };
+    const item = await Gallery.create(itemData);
+    isInitialized = true;
     res.status(201).json({
       success: true,
       data: item,
@@ -36,20 +301,23 @@ exports.createGalleryItem = async (req, res, next) => {
 // @access  Private/Admin
 exports.updateGalleryItem = async (req, res, next) => {
   try {
-    let item = await Gallery.findById(req.params.id);
+    const { id } = req.params;
+    const isMongoId = mongoose.Types.ObjectId.isValid(id);
+    const query = isMongoId ? { $or: [{ _id: id }, { customId: id }] } : { customId: id };
+
+    let item = await Gallery.findOne(query);
 
     if (!item) {
-      return res.status(404).json({
-        success: false,
-        message: `Gallery item not found with id of ${req.params.id}`,
+      // If not in DB yet, create it with requested changes
+      item = await Gallery.create({ ...req.body, customId: id });
+    } else {
+      item = await Gallery.findOneAndUpdate(query, req.body, {
+        new: true,
+        runValidators: true,
       });
     }
 
-    item = await Gallery.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
+    isInitialized = true;
     res.status(200).json({
       success: true,
       data: item,
@@ -64,19 +332,16 @@ exports.updateGalleryItem = async (req, res, next) => {
 // @access  Private/Admin
 exports.deleteGalleryItem = async (req, res, next) => {
   try {
-    const item = await Gallery.findById(req.params.id);
+    const { id } = req.params;
+    const isMongoId = mongoose.Types.ObjectId.isValid(id);
+    const query = isMongoId ? { $or: [{ _id: id }, { customId: id }] } : { customId: id };
 
-    if (!item) {
-      return res.status(404).json({
-        success: false,
-        message: `Gallery item not found with id of ${req.params.id}`,
-      });
-    }
-
-    await item.deleteOne();
+    await Gallery.deleteMany(query);
+    isInitialized = true;
 
     res.status(200).json({
       success: true,
+      message: 'Gallery item deleted successfully',
       data: {},
     });
   } catch (error) {

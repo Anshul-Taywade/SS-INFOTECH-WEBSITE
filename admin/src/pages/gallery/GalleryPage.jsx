@@ -1,17 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import AdminHeader from '@/components/AdminHeader';
 import { useAdminTheme } from '@/context/AdminThemeContext';
 import { 
   Plus, Edit, Trash2, Eye, Sparkles, 
-  Search, Calendar, MapPin, X, Loader2 
+  Search, Calendar, MapPin, X, Loader2, Image as ImageIcon 
 } from 'lucide-react';
 import { api } from '@/services/api';
 
 export default function GalleryManagerPage() {
   const { isDarkMode } = useAdminTheme();
   
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Instant initial load from cache with 0ms delay
+  const [items, setItems] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ss_gallery_items');
+      const synced = localStorage.getItem('ss_gallery_synced');
+      if (saved) return JSON.parse(saved);
+      if (synced === 'true') return [];
+    } catch (e) {}
+    return [];
+  });
+
+  const [loading, setLoading] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ss_gallery_items');
+      return !saved;
+    } catch (e) {
+      return false;
+    }
+  });
+
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -30,15 +48,10 @@ export default function GalleryManagerPage() {
 
   const categories = ['All', 'Cultural & Celebrations', 'Company Events', 'Training & Workshops', 'Office Environment', 'Team Activities'];
 
-  useEffect(() => {
-    loadGallery();
-  }, []);
-
-  const loadGallery = async () => {
-    setLoading(true);
+  const loadGallery = useCallback(async () => {
     try {
       const res = await api.getGallery();
-      if (res && res.data) {
+      if (res && Array.isArray(res.data)) {
         setItems(res.data);
       }
     } catch (e) {
@@ -46,7 +59,25 @@ export default function GalleryManagerPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadGallery();
+
+    const handleUpdate = () => {
+      try {
+        const saved = localStorage.getItem('ss_gallery_items');
+        if (saved) setItems(JSON.parse(saved));
+      } catch (e) {}
+    };
+
+    window.addEventListener('ss_gallery_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('ss_gallery_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, [loadGallery]);
 
   const filteredItems = items.filter(item => {
     const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
@@ -56,10 +87,15 @@ export default function GalleryManagerPage() {
   });
 
   const handleDelete = async (id) => {
-    if (confirm('Are you sure you want to delete this gallery image? It will be removed permanently from the website.')) {
-      const remaining = items.filter(item => item.id !== id && item._id !== id);
+    if (confirm('Are you sure you want to delete this gallery image? It will be removed permanently from both the Admin Panel and the public website.')) {
+      const targetId = id;
+      const remaining = items.filter(item => item.id !== targetId && item._id !== targetId && item.customId !== targetId);
       setItems(remaining);
-      await api.deleteGalleryItem(id);
+      try {
+        localStorage.setItem('ss_gallery_items', JSON.stringify(remaining));
+        localStorage.setItem('ss_gallery_synced', 'true');
+      } catch (e) {}
+      await api.deleteGalleryItem(targetId);
     }
   };
 
@@ -75,7 +111,10 @@ export default function GalleryManagerPage() {
     
     const res = await api.createGalleryItem(newItemData);
     if (res && res.data) {
-      setItems([res.data, ...items]);
+      setItems(prev => [res.data, ...prev]);
+    } else {
+      const fallbackItem = { ...newItemData, id: `real-${Date.now()}` };
+      setItems(prev => [fallbackItem, ...prev]);
     }
     setIsAddModalOpen(false);
     setFormData({ title: '', category: 'Office Environment', location: 'SS Infotech Headquarters', date: '2026', caption: '', imgSrc: '' });
@@ -85,8 +124,9 @@ export default function GalleryManagerPage() {
     e.preventDefault();
     if (!editingItem) return;
     
-    await api.updateGalleryItem(editingItem.id || editingItem._id, editingItem);
-    setItems(items.map(item => (item.id === editingItem.id || item._id === editingItem._id) ? editingItem : item));
+    const editId = editingItem.id || editingItem._id || editingItem.customId;
+    await api.updateGalleryItem(editId, editingItem);
+    setItems(items.map(item => (item.id === editId || item._id === editId || item.customId === editId) ? editingItem : item));
     setEditingItem(null);
   };
 
@@ -107,7 +147,7 @@ export default function GalleryManagerPage() {
                 {items.length} Live Images
               </span>
             </h1>
-            <p className="text-xs text-slate-500 font-jakarta">Manage corporate photos and captions. All edits sync live to public website gallery.</p>
+            <p className="text-xs text-slate-500 font-jakarta">Manage corporate photos and captions. All edits and deletions sync instantly across the entire website.</p>
           </div>
 
           <button
@@ -158,104 +198,23 @@ export default function GalleryManagerPage() {
         </div>
 
         {/* Media Grid */}
-        {loading ? (
+        {loading && items.length === 0 ? (
           <div className="p-12 text-center text-slate-400 font-jakarta text-xs flex items-center justify-center gap-2">
             <Loader2 size={16} className="animate-spin text-purple-500" />
             <span>Loading gallery photos...</span>
           </div>
         ) : filteredItems.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map((item) => (
-              <div key={item.id || item._id} className={`group rounded-3xl overflow-hidden border shadow-md flex flex-col transition-all hover:shadow-xl ${
-                isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-              }`}>
-                
-                {/* Image Preview Container */}
-                <div className="relative w-full aspect-video bg-black overflow-hidden">
-                  <span className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md flex items-center gap-1 font-jakarta uppercase">
-                    <Sparkles size={11} className="text-amber-300" />
-                    <span>Real SS Infotech Photo</span>
-                  </span>
-
-                  <img 
-                    src={item.imgSrc} 
-                    alt={item.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-
-                  {/* Hover Action Overlay */}
-                  <div className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
-                    <button
-                      onClick={() => setSelectedImage(item)}
-                      className="p-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
-                      title="View Full Preview"
-                    >
-                      <Eye size={18} />
-                    </button>
-                    <button
-                      onClick={() => setEditingItem(item)}
-                      className="p-2.5 rounded-xl bg-amber-500/80 hover:bg-amber-500 text-white transition-colors cursor-pointer"
-                      title="Edit Metadata"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(item.id || item._id)}
-                      className="p-2.5 rounded-xl bg-red-600/80 hover:bg-red-600 text-white transition-colors cursor-pointer"
-                      title="Delete Image Permanently"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Details & Caption */}
-                <div className="p-5 flex-1 flex flex-col justify-between space-y-3 font-jakarta">
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-                        {item.category}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1">
-                        <Calendar size={11} />
-                        {item.date || '2026'}
-                      </span>
-                    </div>
-
-                    <h3 className={`text-sm font-extrabold line-clamp-1 font-outfit ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-                      {item.title}
-                    </h3>
-
-                    <p className={`text-xs mt-1 line-clamp-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-                      {item.caption}
-                    </p>
-                  </div>
-
-                  <div className="pt-3 border-t border-slate-200/50 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-semibold">
-                    <span className="flex items-center gap-1">
-                      <MapPin size={12} className="text-purple-500" />
-                      <span className="truncate max-w-[150px]">{item.location || 'SS Infotech'}</span>
-                    </span>
-
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => setEditingItem(item)}
-                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-purple-600 transition-colors cursor-pointer"
-                      >
-                        <Edit size={14} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id || item._id)}
-                        className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/50 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </div>
-
-                </div>
-
-              </div>
+            {filteredItems.map((item, idx) => (
+              <AdminGalleryCard
+                key={item.id || item._id || item.customId || idx}
+                item={item}
+                idx={idx}
+                isDarkMode={isDarkMode}
+                onPreview={() => setSelectedImage(item)}
+                onEdit={() => setEditingItem(item)}
+                onDelete={() => handleDelete(item.id || item._id || item.customId)}
+              />
             ))}
           </div>
         ) : (
@@ -306,7 +265,7 @@ export default function GalleryManagerPage() {
               <div className="pt-4 border-t border-slate-800 flex gap-2">
                 <button
                   onClick={() => {
-                    handleDelete(selectedImage.id || selectedImage._id);
+                    handleDelete(selectedImage.id || selectedImage._id || selectedImage.customId);
                     setSelectedImage(null);
                   }}
                   className="flex-1 py-2.5 rounded-xl bg-red-950/80 hover:bg-red-900 text-red-200 text-xs font-extrabold transition-colors flex items-center justify-center gap-1.5 border border-red-800/80 cursor-pointer"
@@ -497,6 +456,113 @@ export default function GalleryManagerPage() {
           </div>
         </div>
       )}
+
+    </div>
+  );
+}
+
+function AdminGalleryCard({ item, idx, isDarkMode, onPreview, onEdit, onDelete }) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <div className={`group rounded-3xl overflow-hidden border shadow-md flex flex-col transition-all hover:shadow-xl ${
+      isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+    }`}>
+      {/* Image Preview Container with Shimmer placeholder */}
+      <div className="relative w-full aspect-video bg-slate-950 overflow-hidden flex items-center justify-center">
+        {!isLoaded && (
+          <div className="absolute inset-0 bg-slate-800/80 animate-pulse flex items-center justify-center">
+            <ImageIcon className="w-8 h-8 text-slate-600/60" />
+          </div>
+        )}
+
+        <span className="absolute top-3 left-3 z-10 px-2.5 py-1 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md flex items-center gap-1 font-jakarta uppercase">
+          <Sparkles size={11} className="text-amber-300" />
+          <span>Real SS Infotech Photo</span>
+        </span>
+
+        <img 
+          src={item.imgSrc} 
+          alt={item.title} 
+          loading={idx < 6 ? 'eager' : 'lazy'}
+          decoding="async"
+          onLoad={() => setIsLoaded(true)}
+          className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+
+        {/* Hover Action Overlay */}
+        <div className="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-3">
+          <button
+            onClick={onPreview}
+            className="p-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
+            title="View Full Preview"
+          >
+            <Eye size={18} />
+          </button>
+          <button
+            onClick={onEdit}
+            className="p-2.5 rounded-xl bg-amber-500/80 hover:bg-amber-500 text-white transition-colors cursor-pointer"
+            title="Edit Metadata"
+          >
+            <Edit size={18} />
+          </button>
+          <button
+            onClick={onDelete}
+            className="p-2.5 rounded-xl bg-red-600/80 hover:bg-red-600 text-white transition-colors cursor-pointer"
+            title="Delete Image Permanently"
+          >
+            <Trash2 size={18} />
+          </button>
+        </div>
+      </div>
+
+      {/* Details & Caption */}
+      <div className="p-5 flex-1 flex flex-col justify-between space-y-3 font-jakarta">
+        <div>
+          <div className="flex items-center justify-between gap-2 mb-1.5">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+              {item.category}
+            </span>
+            <span className="text-[10px] text-slate-400 font-bold flex items-center gap-1">
+              <Calendar size={11} />
+              {item.date || '2026'}
+            </span>
+          </div>
+
+          <h3 className={`text-sm font-extrabold line-clamp-1 font-outfit ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+            {item.title}
+          </h3>
+
+          <p className={`text-xs mt-1 line-clamp-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            {item.caption}
+          </p>
+        </div>
+
+        <div className="pt-3 border-t border-slate-200/50 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400 font-semibold">
+          <span className="flex items-center gap-1">
+            <MapPin size={12} className="text-purple-500" />
+            <span className="truncate max-w-[150px]">{item.location || 'SS Infotech'}</span>
+          </span>
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={onEdit}
+              className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-purple-600 transition-colors cursor-pointer"
+            >
+              <Edit size={14} />
+            </button>
+            <button
+              onClick={onDelete}
+              className="p-1.5 rounded-lg hover:bg-red-50 dark:hover:bg-red-950/50 text-slate-400 hover:text-red-600 transition-colors cursor-pointer"
+            >
+              <Trash2 size={14} />
+            </button>
+          </div>
+        </div>
+
+      </div>
 
     </div>
   );

@@ -16,6 +16,7 @@ export default function SettingsManagerPage() {
   });
 
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -34,9 +35,19 @@ export default function SettingsManagerPage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    await api.updateSettings(config);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    try {
+      const res = await api.updateSettings(config);
+      if (res && res.data) {
+        setConfig(prev => ({ ...prev, ...res.data }));
+      }
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.warn('[SettingsPage] Error saving settings:', err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -179,10 +190,11 @@ export default function SettingsManagerPage() {
           <div className="flex justify-end pt-4">
             <button
               type="submit"
-              className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-purple-600/30 cursor-pointer"
+              disabled={saving}
+              className="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg shadow-purple-600/30 cursor-pointer"
             >
               <Save size={16} />
-              <span>Save Configuration</span>
+              <span>{saving ? 'Saving...' : 'Save Configuration'}</span>
             </button>
           </div>
 

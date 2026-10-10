@@ -1,11 +1,22 @@
 const JobApplication = require('../models/JobApplication.model');
 const ApiResponse = require('../utils/apiResponse');
+const mongoose = require('mongoose');
+
+const findApplicationById = async (targetId) => {
+  if (!targetId) return null;
+  if (mongoose.Types.ObjectId.isValid(targetId)) {
+    const item = await JobApplication.findById(targetId);
+    if (item) return item;
+  }
+  return await JobApplication.findOne({ id: targetId });
+};
 
 exports.createApplication = async (req, res, next) => {
   try {
     const { candidateName, name, candidateEmail, email, jobTitle, service, portfolioLink, coverNote, message } = req.body;
 
     const application = await JobApplication.create({
+      id: req.body.id || `MSG-${Date.now()}`,
       candidateName: candidateName || name,
       candidateEmail: candidateEmail || email,
       jobTitle: jobTitle || (service ? service.replace('Job Application: ', '') : 'Engineering Role'),
@@ -31,12 +42,14 @@ exports.getApplications = async (req, res, next) => {
 exports.updateApplicationStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
+    const existing = await findApplicationById(req.params.id);
+    if (!existing) return ApiResponse.error(res, 'Application not found', 404);
+
     const application = await JobApplication.findByIdAndUpdate(
-      req.params.id,
+      existing._id,
       { status },
-      { new: true, runValidators: true }
+      { new: true, runValidators: false }
     );
-    if (!application) return ApiResponse.error(res, 'Application not found', 404);
     return ApiResponse.success(res, application, 'Application status updated.');
   } catch (error) {
     next(error);
@@ -45,8 +58,10 @@ exports.updateApplicationStatus = async (req, res, next) => {
 
 exports.deleteApplication = async (req, res, next) => {
   try {
-    const application = await JobApplication.findByIdAndDelete(req.params.id);
-    if (!application) return ApiResponse.error(res, 'Application not found', 404);
+    const existing = await findApplicationById(req.params.id);
+    if (!existing) return ApiResponse.error(res, 'Application not found', 404);
+
+    await JobApplication.deleteOne({ _id: existing._id });
     return ApiResponse.success(res, null, 'Application deleted.');
   } catch (error) {
     next(error);

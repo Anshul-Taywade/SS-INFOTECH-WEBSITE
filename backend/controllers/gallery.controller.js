@@ -1,4 +1,14 @@
 const Gallery = require('../models/Gallery.model');
+const mongoose = require('mongoose');
+
+const findGalleryItemById = async (targetId) => {
+  if (!targetId) return null;
+  if (mongoose.Types.ObjectId.isValid(targetId)) {
+    const item = await Gallery.findById(targetId);
+    if (item) return item;
+  }
+  return await Gallery.findOne({ id: targetId });
+};
 
 // @desc    Get all gallery items
 // @route   GET /api/v1/gallery
@@ -21,7 +31,11 @@ exports.getGallery = async (req, res, next) => {
 // @access  Private/Admin
 exports.createGalleryItem = async (req, res, next) => {
   try {
-    const item = await Gallery.create(req.body);
+    const itemData = {
+      ...req.body,
+      id: req.body.id || `real-${Date.now()}`
+    };
+    const item = await Gallery.create(itemData);
     res.status(201).json({
       success: true,
       data: item,
@@ -36,7 +50,7 @@ exports.createGalleryItem = async (req, res, next) => {
 // @access  Private/Admin
 exports.updateGalleryItem = async (req, res, next) => {
   try {
-    let item = await Gallery.findById(req.params.id);
+    let item = await findGalleryItemById(req.params.id);
 
     if (!item) {
       return res.status(404).json({
@@ -45,7 +59,7 @@ exports.updateGalleryItem = async (req, res, next) => {
       });
     }
 
-    item = await Gallery.findByIdAndUpdate(req.params.id, req.body, {
+    item = await Gallery.findByIdAndUpdate(item._id, req.body, {
       new: true,
       runValidators: true,
     });
@@ -64,7 +78,7 @@ exports.updateGalleryItem = async (req, res, next) => {
 // @access  Private/Admin
 exports.deleteGalleryItem = async (req, res, next) => {
   try {
-    const item = await Gallery.findById(req.params.id);
+    const item = await findGalleryItemById(req.params.id);
 
     if (!item) {
       return res.status(404).json({
@@ -73,7 +87,7 @@ exports.deleteGalleryItem = async (req, res, next) => {
       });
     }
 
-    await item.deleteOne();
+    await Gallery.deleteOne({ _id: item._id });
 
     res.status(200).json({
       success: true,

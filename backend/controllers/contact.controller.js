@@ -1,5 +1,15 @@
 const Contact = require('../models/Contact.model');
 const ApiResponse = require('../utils/apiResponse');
+const mongoose = require('mongoose');
+
+const findContactById = async (targetId) => {
+  if (!targetId) return null;
+  if (mongoose.Types.ObjectId.isValid(targetId)) {
+    const item = await Contact.findById(targetId);
+    if (item) return item;
+  }
+  return await Contact.findOne({ id: targetId });
+};
 
 /**
  * @desc    Submit Contact Inquiry Form
@@ -8,11 +18,14 @@ const ApiResponse = require('../utils/apiResponse');
  */
 exports.createContact = async (req, res, next) => {
   try {
-    const { name, email, service, category, message } = req.body;
+    const { name, email, service, category, message, phone, subject } = req.body;
 
     const contact = await Contact.create({
+      id: req.body.id || `MSG-${Date.now()}`,
       name,
       email,
+      phone: phone || '+91 98765 43210',
+      subject: subject || service || 'Website Lead Inquiry',
       service: service || 'Website Development',
       category: category || (service && service.toLowerCase().includes('job') ? 'JOB_APPLICATION' : 'SERVICE_INQUIRY'),
       message,
@@ -31,7 +44,7 @@ exports.createContact = async (req, res, next) => {
 /**
  * @desc    Get All Contact Submissions (Leads)
  * @route   GET /api/v1/contacts
- * @access  Protected (Admin)
+ * @access  Public / Admin
  */
 exports.getContacts = async (req, res, next) => {
   try {
@@ -45,11 +58,11 @@ exports.getContacts = async (req, res, next) => {
 /**
  * @desc    Get Single Contact Inquiry
  * @route   GET /api/v1/contacts/:id
- * @access  Protected (Admin)
+ * @access  Public / Admin
  */
 exports.getContactById = async (req, res, next) => {
   try {
-    const contact = await Contact.findById(req.params.id);
+    const contact = await findContactById(req.params.id);
     if (!contact) {
       return ApiResponse.error(res, 'Contact submission not found', 404);
     }
@@ -62,20 +75,22 @@ exports.getContactById = async (req, res, next) => {
 /**
  * @desc    Update Contact Inquiry Status
  * @route   PATCH /api/v1/contacts/:id/status
- * @access  Protected (Admin)
+ * @access  Public / Admin
  */
 exports.updateContactStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
-    const contact = await Contact.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true, runValidators: true }
-    );
+    const existing = await findContactById(req.params.id);
 
-    if (!contact) {
+    if (!existing) {
       return ApiResponse.error(res, 'Contact submission not found', 404);
     }
+
+    const contact = await Contact.findByIdAndUpdate(
+      existing._id,
+      { status },
+      { new: true, runValidators: false }
+    );
 
     return ApiResponse.success(res, contact, 'Contact status updated');
   } catch (error) {
@@ -86,14 +101,15 @@ exports.updateContactStatus = async (req, res, next) => {
 /**
  * @desc    Delete Contact Inquiry
  * @route   DELETE /api/v1/contacts/:id
- * @access  Protected (Admin)
+ * @access  Public / Admin
  */
 exports.deleteContact = async (req, res, next) => {
   try {
-    const contact = await Contact.findByIdAndDelete(req.params.id);
-    if (!contact) {
+    const existing = await findContactById(req.params.id);
+    if (!existing) {
       return ApiResponse.error(res, 'Contact submission not found', 404);
     }
+    await Contact.deleteOne({ _id: existing._id });
     return ApiResponse.success(res, null, 'Contact submission deleted');
   } catch (error) {
     next(error);

@@ -29,9 +29,9 @@ export default function ServicesPage() {
     <main className="min-h-screen w-full overflow-x-hidden flex flex-col bg-bg text-text font-sans selection:bg-primary selection:text-white transition-colors duration-300">
       
       {/* 1. Services Hero Section (Identical Structure & Specs as Home Page Hero) */}
-      <section className="relative isolate mx-auto my-3 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-4 py-16 shadow-[0_20px_50px_-15px_rgba(147,51,234,0.08)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)] sm:px-8 md:min-h-[720px] md:px-12 md:py-20 transition-colors duration-500">
+      <section className="relative isolate mx-auto my-3 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-black px-4 py-16 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.4)] sm:px-8 md:min-h-[720px] md:px-12 md:py-20">
         
-        {/* Full-Cover Auto-Playing Background Video (services.mp4) */}
+        {/* Full-Cover Ultra-Sharp Auto-Playing Background Video (services.mp4) */}
         {!videoError && (
           <video
             autoPlay
@@ -42,26 +42,14 @@ export default function ServicesPage() {
             poster="/img/hero-mockup.png"
             onLoadedData={() => setVideoReady(true)}
             onError={() => setVideoError(true)}
-            className={`pointer-events-none absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 ${
-              videoReady ? 'opacity-85 dark:opacity-85' : 'opacity-0'
+            className={`pointer-events-none absolute inset-0 h-full w-full object-cover object-center [transform:translateZ(0)] [backface-visibility:hidden] [image-rendering:crisp-edges] [filter:contrast(112%)_brightness(106%)_saturate(108%)] transition-opacity duration-300 ${
+              videoReady ? 'opacity-100' : 'opacity-0'
             }`}
           >
             <source src="/videos/services.mp4" type="video/mp4" />
             <source src="/videos/service.mp4" type="video/mp4" />
           </video>
         )}
-
-        {/* Sleek Contrast Overlay Layer (Identical to Home Hero) */}
-        <div 
-          className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-slate-900/15 via-transparent to-slate-900/25 dark:from-[#0b0f19]/70 dark:via-[#111827]/50 dark:to-[#070a12]/80 transition-colors duration-500" 
-          aria-hidden="true"
-        />
-
-        {/* Tech Grid Pattern & Subtle Ambient Glow */}
-        <div className="pointer-events-none absolute inset-0 z-0 opacity-20 dark:opacity-20 [background-image:linear-gradient(rgba(147,51,234,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(147,51,234,0.08)_1px,transparent_1px)] dark:[background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:36px_36px]" />
-
-        {/* Ambient Top Glow */}
-        <div className="pointer-events-none absolute -top-36 left-1/2 z-0 h-[480px] w-[650px] -translate-x-1/2 rounded-full bg-gradient-to-b from-purple-300/25 via-fuchsia-200/15 to-transparent dark:from-purple-600/20 dark:via-fuchsia-600/10 dark:to-transparent blur-3xl" />
 
         {/* Content Container */}
         <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">

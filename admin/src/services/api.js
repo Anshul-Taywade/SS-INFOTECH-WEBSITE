@@ -18,10 +18,15 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-const broadcastUpdate = (key) => {
+const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('ss_infotech_channel') : null;
+
+const broadcastUpdate = (key, payload) => {
   try {
     window.dispatchEvent(new Event(`ss_${key}_updated`));
     window.dispatchEvent(new Event('storage'));
+    if (bc) {
+      bc.postMessage({ type: `ss_${key}_updated`, payload });
+    }
   } catch (e) {}
 };
 
@@ -116,7 +121,7 @@ export const api = {
   getActivityLogs: async () => {
     try {
       const res = await apiClient.get('/activity-logs');
-      if (res.data && res.data.data && res.data.data.length > 0) {
+      if (res.data && res.data.data && Array.isArray(res.data.data)) {
         localStorage.setItem('ss_activities', JSON.stringify(res.data.data));
         return res.data;
       }
@@ -186,12 +191,13 @@ export const api = {
         const mappedProj = projRes.value.data.data.map(p => ({
           _id: p._id,
           id: p._id,
-          name: p.clientName,
-          email: p.clientEmail,
-          subject: `Project Inquiry: ${p.serviceRequested}`,
-          service: p.serviceRequested,
+          name: p.clientName || p.name,
+          email: p.clientEmail || p.email,
+          phone: p.clientPhone || p.phone || '+91 98765 43210',
+          subject: `Project Inquiry: ${p.serviceRequested || p.service}`,
+          service: p.serviceRequested || p.service,
           category: 'SERVICE_INQUIRY',
-          message: p.projectDetails,
+          message: p.projectDetails || p.message,
           status: (p.status || 'NEW').toUpperCase(),
           date: p.createdAt ? new Date(p.createdAt).toLocaleString() : 'Recent'
         }));
@@ -202,12 +208,13 @@ export const api = {
         const mappedJobs = jobRes.value.data.data.map(j => ({
           _id: j._id,
           id: j._id,
-          name: j.candidateName,
-          email: j.candidateEmail,
-          subject: `Job Application: ${j.jobTitle}`,
-          service: j.jobTitle,
+          name: j.candidateName || j.name,
+          email: j.candidateEmail || j.email,
+          phone: j.phone || '+91 98765 43210',
+          subject: `Job Application: ${j.jobTitle || j.service}`,
+          service: j.jobTitle || j.service,
           category: 'JOB_APPLICATION',
-          message: `Portfolio Link: ${j.portfolioLink}\nCover Note: ${j.coverNote}`,
+          message: `Portfolio Link: ${j.portfolioLink || 'N/A'}\nCover Note: ${j.coverNote || j.message || ''}`,
           status: (j.status || 'NEW').toUpperCase(),
           date: j.createdAt ? new Date(j.createdAt).toLocaleString() : 'Recent'
         }));
@@ -223,7 +230,7 @@ export const api = {
         combined = [...combined, ...mappedContacts];
       }
 
-      if (combined.length > 0) {
+      if (projRes.status === 'fulfilled' || jobRes.status === 'fulfilled' || contactsRes.status === 'fulfilled') {
         localStorage.setItem('ss_contacts', JSON.stringify(combined));
         localStorage.setItem('ss_contacts_init', 'true');
         return { data: combined };
@@ -241,8 +248,16 @@ export const api = {
   },
   updateContactStatus: async (id, status) => {
     try {
-      const res = await apiClient.patch(`/contacts/${id}/status`, { status });
-      return res.data;
+      await Promise.allSettled([
+        apiClient.patch(`/contacts/${id}/status`, { status }),
+        apiClient.patch(`/project-inquiries/${id}/status`, { status }),
+        apiClient.patch(`/job-applications/${id}/status`, { status })
+      ]);
+      const saved = JSON.parse(localStorage.getItem('ss_contacts') || '[]');
+      const updated = saved.map(item => (item._id === id || item.id === id) ? { ...item, status } : item);
+      localStorage.setItem('ss_contacts', JSON.stringify(updated));
+      broadcastUpdate('contacts');
+      return { success: true };
     } catch (e) {
       const saved = JSON.parse(localStorage.getItem('ss_contacts') || '[]');
       const updated = saved.map(item => (item._id === id || item.id === id) ? { ...item, status } : item);
@@ -253,7 +268,11 @@ export const api = {
   },
   deleteContact: async (id) => {
     try {
-      await apiClient.delete(`/contacts/${id}`);
+      await Promise.allSettled([
+        apiClient.delete(`/contacts/${id}`),
+        apiClient.delete(`/project-inquiries/${id}`),
+        apiClient.delete(`/job-applications/${id}`)
+      ]);
     } catch (e) {}
     const saved = JSON.parse(localStorage.getItem('ss_contacts') || '[]');
     const updated = saved.filter(item => item._id !== id && item.id !== id);
@@ -273,7 +292,7 @@ export const api = {
   getServices: async () => {
     try {
       const res = await apiClient.get('/services');
-      if (res.data && res.data.data && res.data.data.length > 0) {
+      if (res.data && res.data.data && Array.isArray(res.data.data)) {
         localStorage.setItem('ss_services', JSON.stringify(res.data.data));
         return res.data;
       }
@@ -339,13 +358,17 @@ export const api = {
   getGallery: async () => {
     try {
       const res = await apiClient.get('/gallery');
-      if (res.data && res.data.data && res.data.data.length > 0) {
+      if (res.data && Array.isArray(res.data.data)) {
         localStorage.setItem('ss_gallery_items', JSON.stringify(res.data.data));
         return res.data;
       }
     } catch (e) {}
     const saved = localStorage.getItem('ss_gallery_items');
-    return { data: saved ? JSON.parse(saved) : REAL_COMPANY_GALLERY_ITEMS };
+    if (saved !== null) {
+      return { data: JSON.parse(saved) };
+    }
+    localStorage.setItem('ss_gallery_items', JSON.stringify(REAL_COMPANY_GALLERY_ITEMS));
+    return { data: REAL_COMPANY_GALLERY_ITEMS };
   },
   createGalleryItem: async (data) => {
     let result;
@@ -405,7 +428,7 @@ export const api = {
   getTeam: async () => {
     try {
       const res = await apiClient.get('/team');
-      if (res.data && res.data.data && res.data.data.length > 0) {
+      if (res.data && res.data.data && Array.isArray(res.data.data)) {
         localStorage.setItem('ss_team', JSON.stringify(res.data.data));
         return res.data;
       }
@@ -495,16 +518,19 @@ export const api = {
     try {
       const res = await apiClient.put('/settings', data);
       result = res.data;
-    } catch (e) {}
-    localStorage.setItem('ss_settings', JSON.stringify(data));
-    broadcastUpdate('settings');
+    } catch (e) {
+      console.warn('[Admin API] updateSettings error:', e.message);
+    }
+    const finalData = (result && result.data) ? result.data : data;
+    localStorage.setItem('ss_settings', JSON.stringify(finalData));
+    broadcastUpdate('settings', finalData);
     api.logActivity({
       title: 'ISO & Site Settings Saved',
       description: 'Updated company contact and ISO compliance standards.',
       category: 'settings',
       link: '/settings'
     });
-    return result || { success: true, data };
+    return result || { success: true, data: finalData };
   },
 };
 

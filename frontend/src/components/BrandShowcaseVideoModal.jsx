@@ -228,11 +228,8 @@ export default function BrandShowcaseVideoModal({ isOpen, onClose, selectedVideo
               playsInline
               src={activeVideo.videoUrl}
               onError={() => setVideoError(true)}
-              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+              className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none [filter:contrast(115%)_brightness(108%)_saturate(110%)]"
             />
-
-            {/* Subtle Vignette Edge Fade */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(2,6,23,0.75)_100%)] pointer-events-none z-10" />
 
             {/* Telemetry HUD Overlay */}
             <AnimatePresence>

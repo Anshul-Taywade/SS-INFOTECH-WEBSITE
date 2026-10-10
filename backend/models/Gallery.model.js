@@ -2,6 +2,13 @@ const mongoose = require('mongoose');
 
 const gallerySchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+    },
+    isSeeded: {
+      type: Boolean,
+      default: false,
+    },
     title: {
       type: String,
       required: [true, 'Title is required'],

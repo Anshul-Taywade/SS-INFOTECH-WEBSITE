@@ -18,15 +18,35 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-const broadcastUpdate = (key) => {
+const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('ss_infotech_channel') : null;
+
+if (bc) {
+  bc.onmessage = (event) => {
+    try {
+      if (event.data && event.data.type) {
+        if (event.data.payload && event.data.type === 'ss_settings_updated') {
+          localStorage.setItem('ss_settings', JSON.stringify(event.data.payload));
+        }
+        window.dispatchEvent(new CustomEvent(event.data.type, { detail: event.data.payload }));
+        window.dispatchEvent(new Event('storage'));
+      }
+    } catch (e) {}
+  };
+}
+
+const broadcastUpdate = (key, payload) => {
   try {
-    window.dispatchEvent(new Event(`ss_${key}_updated`));
+    window.dispatchEvent(new CustomEvent(`ss_${key}_updated`, { detail: payload }));
     window.dispatchEvent(new Event('storage'));
+    if (bc) {
+      bc.postMessage({ type: `ss_${key}_updated`, payload });
+    }
   } catch (e) {}
 };
 
 export const api = {
   submitProjectInquiry: async (formData) => {
+    let result;
     try {
       const res = await apiClient.post('/project-inquiries', {
         clientName: formData.name || formData.clientName,
@@ -34,25 +54,61 @@ export const api = {
         serviceRequested: formData.service || formData.serviceRequested || 'Website Development',
         projectDetails: formData.message || formData.projectDetails || 'Project Consultation Request',
       });
-      return res.data;
-    } catch (e) {
-      return { success: true, message: 'Inquiry submitted successfully!' };
-    }
+      result = res.data;
+    } catch (e) {}
+    
+    const saved = JSON.parse(localStorage.getItem('ss_contacts') || '[]');
+    const newLead = {
+      _id: `MSG-${Date.now()}`,
+      id: `MSG-${Date.now()}`,
+      name: formData.name || formData.clientName,
+      email: formData.email || formData.clientEmail,
+      phone: formData.phone || '+91 98765 43210',
+      subject: `Project Inquiry: ${formData.service || formData.serviceRequested || 'Website Development'}`,
+      service: formData.service || formData.serviceRequested || 'Website Development',
+      category: 'SERVICE_INQUIRY',
+      date: new Date().toLocaleString(),
+      status: 'NEW',
+      message: formData.message || formData.projectDetails || 'Project Consultation Request',
+    };
+    const updated = [newLead, ...saved];
+    localStorage.setItem('ss_contacts', JSON.stringify(updated));
+    broadcastUpdate('contacts');
+    return result || { success: true, message: 'Inquiry submitted successfully!' };
   },
 
   submitJobApplication: async (formData) => {
+    let result;
+    const jobTitle = formData.jobTitle || (formData.service ? formData.service.replace('Job Application: ', '') : 'Engineering Role');
     try {
       const res = await apiClient.post('/job-applications', {
         candidateName: formData.name || formData.candidateName,
         candidateEmail: formData.email || formData.candidateEmail,
-        jobTitle: formData.jobTitle || (formData.service ? formData.service.replace('Job Application: ', '') : 'Engineering Role'),
+        jobTitle: jobTitle,
         portfolioLink: formData.portfolio || formData.portfolioLink || 'N/A',
         coverNote: formData.notes || formData.coverNote || formData.message || '',
       });
-      return res.data;
-    } catch (e) {
-      return { success: true, message: 'Job Application submitted successfully!' };
-    }
+      result = res.data;
+    } catch (e) {}
+
+    const saved = JSON.parse(localStorage.getItem('ss_contacts') || '[]');
+    const newLead = {
+      _id: `MSG-${Date.now()}`,
+      id: `MSG-${Date.now()}`,
+      name: formData.name || formData.candidateName,
+      email: formData.email || formData.candidateEmail,
+      phone: formData.phone || '+91 98765 43210',
+      subject: `Job Application: ${jobTitle}`,
+      service: jobTitle,
+      category: 'JOB_APPLICATION',
+      date: new Date().toLocaleString(),
+      status: 'NEW',
+      message: `Portfolio Link: ${formData.portfolio || formData.portfolioLink || 'N/A'}\nCover Note: ${formData.notes || formData.coverNote || formData.message || ''}`,
+    };
+    const updated = [newLead, ...saved];
+    localStorage.setItem('ss_contacts', JSON.stringify(updated));
+    broadcastUpdate('contacts');
+    return result || { success: true, message: 'Job Application submitted successfully!' };
   },
 
   submitContact: async (formData) => {
@@ -91,7 +147,7 @@ export const api = {
   getServices: async () => {
     try {
       const res = await apiClient.get('/services');
-      if (res.data && res.data.data && res.data.data.length > 0) {
+      if (res.data && res.data.data && Array.isArray(res.data.data)) {
         localStorage.setItem('ss_services', JSON.stringify(res.data.data));
         return res.data;
       }
@@ -103,19 +159,23 @@ export const api = {
   getGallery: async () => {
     try {
       const res = await apiClient.get('/gallery');
-      if (res.data && res.data.data && res.data.data.length > 0) {
+      if (res.data && Array.isArray(res.data.data)) {
         localStorage.setItem('ss_gallery_items', JSON.stringify(res.data.data));
         return res.data;
       }
     } catch (e) {}
     const saved = localStorage.getItem('ss_gallery_items');
-    return { data: saved ? JSON.parse(saved) : REAL_COMPANY_GALLERY_ITEMS };
+    if (saved !== null) {
+      return { data: JSON.parse(saved) };
+    }
+    localStorage.setItem('ss_gallery_items', JSON.stringify(REAL_COMPANY_GALLERY_ITEMS));
+    return { data: REAL_COMPANY_GALLERY_ITEMS };
   },
 
   getTeam: async () => {
     try {
       const res = await apiClient.get('/team');
-      if (res.data && res.data.data && res.data.data.length > 0) {
+      if (res.data && res.data.data && Array.isArray(res.data.data)) {
         localStorage.setItem('ss_team', JSON.stringify(res.data.data));
         return res.data;
       }

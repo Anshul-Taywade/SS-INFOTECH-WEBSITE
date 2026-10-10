@@ -27,16 +27,27 @@ export default function GalleryPage() {
     const handleUpdate = () => loadGallery();
     window.addEventListener('ss_gallery_updated', handleUpdate);
     window.addEventListener('storage', handleUpdate);
+
+    const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('ss_infotech_channel') : null;
+    if (bc) {
+      bc.onmessage = (msg) => {
+        if (msg && msg.data && msg.data.type === 'ss_gallery_updated') {
+          loadGallery();
+        }
+      };
+    }
+
     return () => {
       window.removeEventListener('ss_gallery_updated', handleUpdate);
       window.removeEventListener('storage', handleUpdate);
+      if (bc) bc.close();
     };
   }, []);
 
   const loadGallery = async () => {
     try {
       const res = await api.getGallery();
-      if (res && res.data && res.data.length > 0) {
+      if (res && res.data && Array.isArray(res.data)) {
         setItems(res.data);
       }
     } catch (e) {

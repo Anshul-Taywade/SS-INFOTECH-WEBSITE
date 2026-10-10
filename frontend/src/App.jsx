@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { SettingsProvider } from '@/context/SettingsContext';
 import MainLayout from '@/layouts/MainLayout';
 import Home from '@/pages/Home';
 import About from '@/pages/About';
@@ -32,21 +33,23 @@ function RedirectToHomeOnRefresh() {
 export default function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <RedirectToHomeOnRefresh />
-        <Routes>
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="services" element={<ServicesPage />} />
-            <Route path="solutions" element={<SolutionsPage />} />
-            <Route path="gallery" element={<GalleryPage />} />
-            <Route path="careers" element={<CareersPage />} />
-            <Route path="contact" element={<ContactPage />} />
-            <Route path="*" element={<Home />} />
-          </Route>
-        </Routes>
-      </Router>
+      <SettingsProvider>
+        <Router>
+          <RedirectToHomeOnRefresh />
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
+              <Route path="services" element={<ServicesPage />} />
+              <Route path="solutions" element={<SolutionsPage />} />
+              <Route path="gallery" element={<GalleryPage />} />
+              <Route path="careers" element={<CareersPage />} />
+              <Route path="contact" element={<ContactPage />} />
+              <Route path="*" element={<Home />} />
+            </Route>
+          </Routes>
+        </Router>
+      </SettingsProvider>
     </ThemeProvider>
   );
 }

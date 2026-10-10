@@ -332,12 +332,9 @@ export default function VirtualHeroBackground({
   }, [virtualMode]);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-0 select-none overflow-hidden bg-white" aria-hidden="true">
+    <div className="pointer-events-none absolute inset-0 z-0 select-none overflow-hidden bg-black" aria-hidden="true">
       
-      {/* PURE WHITE BASE BACKGROUND */}
-      <div className="absolute inset-0 bg-white" />
-
-      {/* NATIVE HD VIDEO STREAM WITH CRISP WHITE GLASS OVERLAY */}
+      {/* 100% CRYSTAL CLEAR HD VIDEO STREAM */}
       {!videoError && (
         <video
           key={currentVideoSrc}
@@ -348,30 +345,13 @@ export default function VirtualHeroBackground({
           preload="auto"
           onLoadedData={() => setVideoReady(true)}
           onError={() => setVideoError(true)}
-          className={`absolute inset-0 h-full w-full scale-105 object-cover object-center transition-opacity duration-1000 ${
-            videoReady ? 'opacity-25' : 'opacity-0'
+          className={`absolute inset-0 h-full w-full object-cover object-center [transform:translateZ(0)] [backface-visibility:hidden] [image-rendering:crisp-edges] [filter:contrast(112%)_brightness(106%)_saturate(108%)] transition-opacity duration-300 ${
+            videoReady ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <source src={currentVideoSrc} type="video/mp4" />
         </video>
       )}
-
-      {/* 3D CANVAS INTERACTIVE OVERLAY */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 h-full w-full opacity-90 transition-opacity duration-700 pointer-events-none"
-      />
-
-      {/* Light Grid Pattern Overlay */}
-      <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(124,58,237,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(124,58,237,0.08)_1px,transparent_1px)] [background-size:48px_48px]" />
-
-      {/* Soft Pastel Ambient Glow Orbs */}
-      <div className="absolute -right-32 -top-20 h-[36rem] w-[36rem] rounded-full border border-violet-200/50 bg-violet-100/60 blur-3xl" />
-      <div className="absolute -left-32 -bottom-20 h-[32rem] w-[32rem] rounded-full border border-cyan-200/50 bg-cyan-100/50 blur-3xl" />
-
-      {/* Pure White Glassmorphism Edge Fade & Lighting Mask */}
-      <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/50 to-white/95" />
     </div>
   );
 }

@@ -23,6 +23,9 @@ const contactSchema = new mongoose.Schema(
       enum: ['SERVICE_INQUIRY', 'JOB_APPLICATION'],
       default: 'SERVICE_INQUIRY',
     },
+    id: {
+      type: String,
+    },
     message: {
       type: String,
       required: [true, 'Project message details are required'],
@@ -30,7 +33,6 @@ const contactSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['NEW', 'IN_REVIEW', 'CONTACTED', 'CLOSED'],
       default: 'NEW',
     },
   },

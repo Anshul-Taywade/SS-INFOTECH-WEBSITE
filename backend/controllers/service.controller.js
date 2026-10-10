@@ -1,5 +1,15 @@
 const Service = require('../models/Service.model');
 const ApiResponse = require('../utils/apiResponse');
+const mongoose = require('mongoose');
+
+const findServiceById = async (targetId) => {
+  if (!targetId) return null;
+  if (mongoose.Types.ObjectId.isValid(targetId)) {
+    const service = await Service.findById(targetId);
+    if (service) return service;
+  }
+  return await Service.findOne({ id: targetId });
+};
 
 /**
  * @desc    Get All Active Services
@@ -22,7 +32,11 @@ exports.getServices = async (req, res, next) => {
  */
 exports.createService = async (req, res, next) => {
   try {
-    const service = await Service.create(req.body);
+    const serviceData = {
+      ...req.body,
+      id: req.body.id || `srv-${Date.now()}`
+    };
+    const service = await Service.create(serviceData);
     return ApiResponse.created(res, service, 'Service created successfully');
   } catch (error) {
     next(error);
@@ -36,13 +50,16 @@ exports.createService = async (req, res, next) => {
  */
 exports.updateService = async (req, res, next) => {
   try {
-    const service = await Service.findByIdAndUpdate(req.params.id, req.body, {
+    const existing = await findServiceById(req.params.id);
+    if (!existing) {
+      return ApiResponse.error(res, 'Service not found', 404);
+    }
+
+    const service = await Service.findByIdAndUpdate(existing._id, req.body, {
       new: true,
       runValidators: true,
     });
-    if (!service) {
-      return ApiResponse.error(res, 'Service not found', 404);
-    }
+    
     return ApiResponse.success(res, service, 'Service updated successfully');
   } catch (error) {
     next(error);
@@ -56,10 +73,11 @@ exports.updateService = async (req, res, next) => {
  */
 exports.deleteService = async (req, res, next) => {
   try {
-    const service = await Service.findByIdAndDelete(req.params.id);
-    if (!service) {
+    const existing = await findServiceById(req.params.id);
+    if (!existing) {
       return ApiResponse.error(res, 'Service not found', 404);
     }
+    await Service.deleteOne({ _id: existing._id });
     return ApiResponse.success(res, null, 'Service deleted successfully');
   } catch (error) {
     next(error);

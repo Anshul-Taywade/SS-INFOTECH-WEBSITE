@@ -3,8 +3,12 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, CheckCircle2, MessageSquare, Clock, Sparkles } from 'lucide-react';
 import CTABanner from './CTABanner';
 import { api } from '@/services/api';
+import { useSettings } from '@/context/SettingsContext';
 
 export default function ContactSection({ hideCTABanner = false, hideHeader = false }) {
+  const { settings } = useSettings();
+  const displayPhone = settings?.phone || '+91 77700 23791';
+  const cleanPhone = displayPhone.replace(/\s+/g, '');
   const [formState, setFormState] = useState({ name: '', email: '', service: 'Website Development', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -82,7 +86,7 @@ export default function ContactSection({ hideCTABanner = false, hideHeader = fal
             
             {/* Phone Card */}
             <motion.a 
-              href="tel:+917770023791"
+              href={`tel:${cleanPhone}`}
               whileHover={{ y: -4 }}
               className="glass-card p-6 rounded-3xl border border-purple-200/80 dark:border-slate-800 hover:border-purple-400 bg-white/80 dark:bg-slate-900/80 flex items-start gap-4 shadow-xl group block"
             >
@@ -91,14 +95,14 @@ export default function ContactSection({ hideCTABanner = false, hideHeader = fal
               </div>
               <div className="font-outfit">
                 <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1 font-jakarta">Direct Call</span>
-                <h4 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">+91 77700 23791</h4>
+                <h4 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{displayPhone}</h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-bold">Mon - Sat (9:00 AM - 7:00 PM IST)</p>
               </div>
             </motion.a>
 
             {/* Email Card */}
             <motion.a 
-              href="mailto:info@ssinfotech.com"
+              href={`mailto:${settings?.email || 'info@ssinfotech.org'}`}
               whileHover={{ y: -4 }}
               className="glass-card p-6 rounded-3xl border border-purple-200/80 dark:border-slate-800 hover:border-purple-400 bg-white/80 dark:bg-slate-900/80 flex items-start gap-4 shadow-xl group block"
             >
@@ -107,7 +111,7 @@ export default function ContactSection({ hideCTABanner = false, hideHeader = fal
               </div>
               <div className="font-outfit">
                 <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1 font-jakarta">Email Us</span>
-                <h4 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">info@ssinfotech.com</h4>
+                <h4 className="text-lg font-black text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">{settings?.email || 'info@ssinfotech.org'}</h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-bold">Guaranteed response within 2 hours</p>
               </div>
             </motion.a>
@@ -123,7 +127,7 @@ export default function ContactSection({ hideCTABanner = false, hideHeader = fal
               <div className="font-outfit">
                 <span className="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1 font-jakarta">Headquarters</span>
                 <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed font-bold">
-                  #40, 2nd Floor, 2nd Cross, 2nd Main, Outer Ring Road, Bangalore.
+                  {settings?.address || '#40, 2nd Floor, 2nd Cross, 2nd Main, Outer Ring Road, Bangalore.'}
                 </p>
               </div>
             </motion.div>

@@ -1,6 +1,15 @@
 const mongoose = require('mongoose');
 const Gallery = require('../models/Gallery.model');
 
+const findGalleryItemById = async (targetId) => {
+  if (!targetId) return null;
+  if (mongoose.Types.ObjectId.isValid(targetId)) {
+    const item = await Gallery.findById(targetId);
+    if (item) return item;
+  }
+  return await Gallery.findOne({ $or: [{ id: targetId }, { customId: targetId }] });
+};
+
 const defaultGallerySeed = [
   {
     customId: "real-1",
@@ -281,9 +290,11 @@ exports.getGallery = async (req, res, next) => {
 // @access  Private/Admin
 exports.createGalleryItem = async (req, res, next) => {
   try {
+    const assignedId = req.body.id || req.body.customId || `real-${Date.now()}`;
     const itemData = {
       ...req.body,
-      customId: req.body.id || req.body.customId || `real-${Date.now()}`
+      id: assignedId,
+      customId: assignedId
     };
     const item = await Gallery.create(itemData);
     isInitialized = true;
@@ -302,16 +313,12 @@ exports.createGalleryItem = async (req, res, next) => {
 exports.updateGalleryItem = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const isMongoId = mongoose.Types.ObjectId.isValid(id);
-    const query = isMongoId ? { $or: [{ _id: id }, { customId: id }] } : { customId: id };
-
-    let item = await Gallery.findOne(query);
+    let item = await findGalleryItemById(id);
 
     if (!item) {
-      // If not in DB yet, create it with requested changes
-      item = await Gallery.create({ ...req.body, customId: id });
+      item = await Gallery.create({ ...req.body, id, customId: id });
     } else {
-      item = await Gallery.findOneAndUpdate(query, req.body, {
+      item = await Gallery.findByIdAndUpdate(item._id, req.body, {
         new: true,
         runValidators: true,
       });
@@ -334,7 +341,7 @@ exports.deleteGalleryItem = async (req, res, next) => {
   try {
     const { id } = req.params;
     const isMongoId = mongoose.Types.ObjectId.isValid(id);
-    const query = isMongoId ? { $or: [{ _id: id }, { customId: id }] } : { customId: id };
+    const query = isMongoId ? { $or: [{ _id: id }, { customId: id }, { id: id }] } : { $or: [{ customId: id }, { id: id }] };
 
     await Gallery.deleteMany(query);
     isInitialized = true;

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Phone, Menu, X, ArrowUpRight, ChevronRight } from 'lucide-react';
 import ThemeToggle from '@/components/ThemeToggle';
+import { useSettings } from '@/context/SettingsContext';
 
 const links = [
   { name: 'Home', href: '/' },
@@ -15,6 +16,9 @@ const links = [
 ];
 
 export default function Navbar() {
+  const { settings } = useSettings();
+  const displayPhone = settings?.phone || '+91 77700 23791';
+  const cleanPhone = displayPhone.replace(/\s+/g, '');
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { pathname } = useLocation();
@@ -85,12 +89,12 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {/* Call Button */}
             <a 
-              href="tel:+917770023791" 
+              href={`tel:${cleanPhone}`} 
               className="hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/20 dark:border-purple-500/30 bg-white/10 dark:bg-purple-950/60 hover:bg-white/20 dark:hover:bg-purple-900/50 text-white dark:text-purple-200 text-xs font-semibold transition-all hover:border-white/30 dark:hover:border-purple-400 shadow-sm"
               title="Call Us"
             >
               <Phone size={14} className="text-purple-200 dark:text-purple-400" />
-              <span>+91 77700 23791</span>
+              <span>{displayPhone}</span>
             </a>
 
             {/* Get Consultation White Pill CTA Button */}
@@ -108,7 +112,7 @@ export default function Navbar() {
           {/* Mobile Controls */}
           <div className="flex items-center gap-2.5 md:hidden">
             <a 
-              href="tel:+917770023791" 
+              href={`tel:${cleanPhone}`} 
               className="p-2 border border-white/20 rounded-full bg-white/10 text-white hover:bg-white/20 cursor-pointer"
               aria-label="Call Us"
             >
@@ -159,11 +163,11 @@ export default function Navbar() {
             
             <div className="pt-3 mt-2 border-t border-white/20 flex flex-col gap-2">
               <a 
-                href="tel:+917770023791" 
+                href={`tel:${cleanPhone}`} 
                 className="flex items-center justify-center gap-2 py-2.5 text-sm font-bold rounded-full text-white bg-white/10 border border-white/20 cursor-pointer"
               >
                 <Phone size={15} className="text-purple-200" />
-                <span>Call Us: +91 77700 23791</span>
+                <span>Call Us: {displayPhone}</span>
               </a>
 
               <Link

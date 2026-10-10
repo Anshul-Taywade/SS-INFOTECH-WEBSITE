@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 const serviceSchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+    },
     title: {
       type: String,
       required: [true, 'Service title is required'],

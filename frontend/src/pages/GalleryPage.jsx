@@ -40,9 +40,20 @@ export default function GalleryPage() {
     };
     window.addEventListener('ss_gallery_updated', handleUpdate);
     window.addEventListener('storage', handleUpdate);
+
+    const bc = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('ss_infotech_channel') : null;
+    if (bc) {
+      bc.onmessage = (msg) => {
+        if (msg && msg.data && msg.data.type === 'ss_gallery_updated') {
+          loadGallery();
+        }
+      };
+    }
+
     return () => {
       window.removeEventListener('ss_gallery_updated', handleUpdate);
       window.removeEventListener('storage', handleUpdate);
+      if (bc) bc.close();
     };
   }, []);
 

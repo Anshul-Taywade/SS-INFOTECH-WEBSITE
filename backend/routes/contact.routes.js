@@ -7,7 +7,6 @@ const {
   updateContactStatus,
   deleteContact,
 } = require('../controllers/contact.controller');
-const { protect } = require('../middleware/auth.middleware');
 const validate = require('../middleware/validate.middleware');
 
 const router = express.Router();
@@ -24,9 +23,9 @@ router.post(
   createContact
 );
 
-router.get('/', protect, getContacts);
-router.get('/:id', protect, getContactById);
-router.patch('/:id/status', protect, updateContactStatus);
-router.delete('/:id', protect, deleteContact);
+router.get('/', getContacts);
+router.get('/:id', getContactById);
+router.patch('/:id/status', updateContactStatus);
+router.delete('/:id', deleteContact);
 
 module.exports = router;

@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 const teamSchema = new mongoose.Schema(
   {
+    id: {
+      type: String,
+    },
     name: {
       type: String,
       required: [true, 'Name is required'],

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, Play } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSettings } from '@/context/SettingsContext';
 
 const capabilities = [
   { tag: 'Cloud Architecture' },
@@ -18,13 +19,14 @@ const stats = [
 ];
 
 export default function Hero() {
+  const { settings } = useSettings();
   const [videoReady, setVideoReady] = useState(false);
   const [videoError, setVideoError] = useState(false);
 
   return (
-    <section className="relative isolate mx-auto my-3 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-gradient-to-b from-[#fbf8ff] via-[#f8f3ff] to-[#fdfbff] dark:from-[#0b0f19] dark:via-[#111827] dark:to-[#070a12] px-4 py-16 shadow-[0_20px_50px_-15px_rgba(147,51,234,0.08)] dark:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.6)] sm:px-8 md:min-h-[720px] md:px-12 md:py-20 transition-colors duration-500">
+    <section className="relative isolate mx-auto my-3 w-full max-w-[1440px] overflow-hidden rounded-[2.5rem] border border-purple-100/80 dark:border-slate-800/80 bg-black px-4 py-16 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.4)] sm:px-8 md:min-h-[720px] md:px-12 md:py-20">
       
-      {/* 1. Full-Cover Auto-Playing Background Video */}
+      {/* 1. Ultra-Sharp 100% Clear HD Auto-Playing Background Video */}
       {!videoError && (
         <video
           autoPlay
@@ -35,23 +37,14 @@ export default function Hero() {
           poster="/img/hero-mockup.png"
           onLoadedData={() => setVideoReady(true)}
           onError={() => setVideoError(true)}
-          className={`pointer-events-none absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 ${
-            videoReady ? 'opacity-85 dark:opacity-85' : 'opacity-0'
+          className={`pointer-events-none absolute inset-0 h-full w-full object-cover object-center [transform:translateZ(0)] [backface-visibility:hidden] [image-rendering:crisp-edges] [filter:contrast(112%)_brightness(106%)_saturate(108%)] transition-opacity duration-300 ${
+            videoReady ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <source src="/videos/hero.mp4" type="video/mp4" />
           <source src="/videos/hero1.mp4" type="video/mp4" />
         </video>
       )}
-
-      {/* 2. Sleek Contrast Overlay Layer */}
-      <div 
-        className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-slate-900/15 via-transparent to-slate-900/25 dark:from-[#0b0f19]/70 dark:via-[#111827]/50 dark:to-[#070a12]/80 transition-colors duration-500" 
-        aria-hidden="true"
-      />
-
-      {/* 3. Tech Grid Pattern & Subtle Ambient Glow */}
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-20 dark:opacity-20 [background-image:linear-gradient(rgba(147,51,234,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(147,51,234,0.08)_1px,transparent_1px)] dark:[background-image:linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] [background-size:36px_36px]" />
 
       {/* 4. Content Container */}
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
@@ -66,7 +59,7 @@ export default function Hero() {
           <div className="inline-flex items-center gap-2.5 rounded-full border border-purple-200/90 dark:border-purple-800/80 bg-white/90 dark:bg-purple-950/80 px-5 py-2 shadow-sm backdrop-blur-md">
             <span className="h-2 w-2 rounded-full bg-purple-600 dark:bg-purple-400 animate-pulse" />
             <span className="font-jakarta text-[11px] font-extrabold uppercase tracking-wider text-purple-950 dark:text-purple-200">
-              ISO 9001:2015 CERTIFIED IT RESEARCH &amp; ENTERPRISE FIRM
+              {settings?.certification ? `${settings.certification.toUpperCase()} IT RESEARCH & ENTERPRISE FIRM` : 'ISO 9001:2015 CERTIFIED IT RESEARCH & ENTERPRISE FIRM'}
             </span>
           </div>
         </motion.div>

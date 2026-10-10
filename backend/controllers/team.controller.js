@@ -1,4 +1,14 @@
 const Team = require('../models/Team.model');
+const mongoose = require('mongoose');
+
+const findTeamMemberById = async (targetId) => {
+  if (!targetId) return null;
+  if (mongoose.Types.ObjectId.isValid(targetId)) {
+    const member = await Team.findById(targetId);
+    if (member) return member;
+  }
+  return await Team.findOne({ id: targetId });
+};
 
 // @desc    Get all team members
 // @route   GET /api/v1/team
@@ -21,7 +31,11 @@ exports.getTeam = async (req, res, next) => {
 // @access  Private/Admin
 exports.createTeamMember = async (req, res, next) => {
   try {
-    const member = await Team.create(req.body);
+    const memberData = {
+      ...req.body,
+      id: req.body.id || `team-${Date.now()}`
+    };
+    const member = await Team.create(memberData);
     res.status(201).json({
       success: true,
       data: member,
@@ -36,7 +50,7 @@ exports.createTeamMember = async (req, res, next) => {
 // @access  Private/Admin
 exports.updateTeamMember = async (req, res, next) => {
   try {
-    let member = await Team.findById(req.params.id);
+    let member = await findTeamMemberById(req.params.id);
 
     if (!member) {
       return res.status(404).json({
@@ -45,7 +59,7 @@ exports.updateTeamMember = async (req, res, next) => {
       });
     }
 
-    member = await Team.findByIdAndUpdate(req.params.id, req.body, {
+    member = await Team.findByIdAndUpdate(member._id, req.body, {
       new: true,
       runValidators: true,
     });
@@ -64,7 +78,7 @@ exports.updateTeamMember = async (req, res, next) => {
 // @access  Private/Admin
 exports.deleteTeamMember = async (req, res, next) => {
   try {
-    const member = await Team.findById(req.params.id);
+    const member = await findTeamMemberById(req.params.id);
 
     if (!member) {
       return res.status(404).json({
@@ -73,7 +87,7 @@ exports.deleteTeamMember = async (req, res, next) => {
       });
     }
 
-    await member.deleteOne();
+    await Team.deleteOne({ _id: member._id });
 
     res.status(200).json({
       success: true,

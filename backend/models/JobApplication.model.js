@@ -25,10 +25,12 @@ const jobApplicationSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    id: {
+      type: String,
+    },
     status: {
       type: String,
-      enum: ['New', 'Shortlisted', 'Contacted', 'Rejected'],
-      default: 'New',
+      default: 'NEW',
     },
   },
   {

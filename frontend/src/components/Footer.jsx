@@ -1,42 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, MapPin, Phone, Send, CheckCircle2, ArrowUpRight, Github, Twitter, Linkedin, ShieldCheck } from 'lucide-react';
 import { api } from '@/services/api';
+import { useSettings } from '@/context/SettingsContext';
 
 export default function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [settings, setSettings] = useState({
-    companyName: 'SS INFOTECH',
-    certification: 'ISO 9001:2015 Certified Firm',
-    email: 'info@ssinfotech.org',
-    phone: '+91 77700 23791',
-    address: '#40, 2nd Floor, 2nd Cross, 2nd Main, Outer Ring Road, Bangalore.'
-  });
-
-  useEffect(() => {
-    loadSettings();
-
-    const handleUpdate = () => loadSettings();
-    window.addEventListener('ss_settings_updated', handleUpdate);
-    window.addEventListener('storage', handleUpdate);
-    return () => {
-      window.removeEventListener('ss_settings_updated', handleUpdate);
-      window.removeEventListener('storage', handleUpdate);
-    };
-  }, []);
-
-  const loadSettings = async () => {
-    try {
-      const res = await api.getSettings();
-      if (res && res.data) {
-        setSettings(prev => ({ ...prev, ...res.data }));
-      }
-    } catch (e) {
-      console.warn('Footer settings load fallback active');
-    }
-  };
+  const { settings } = useSettings();
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -148,7 +120,7 @@ export default function Footer() {
                 <div className="p-1.5 rounded-lg bg-white/10 dark:bg-purple-950/60 text-white dark:text-purple-200 shrink-0 border border-white/20 dark:border-purple-500/30">
                   <Phone size={15} />
                 </div>
-                <a href={`tel:${settings.phone || '+917770023791'}`} className="hover:text-white dark:hover:text-purple-100 transition-colors cursor-pointer dark:text-purple-200">
+                <a href={`tel:${(settings.phone || '+91 77700 23791').replace(/\s+/g, '')}`} className="hover:text-white dark:hover:text-purple-100 transition-colors cursor-pointer dark:text-purple-200">
                   {settings.phone || '+91 77700 23791'}
                 </a>
               </li>

@@ -22,10 +22,12 @@ const projectInquirySchema = new mongoose.Schema(
       required: [true, 'Project details are required'],
       trim: true,
     },
+    id: {
+      type: String,
+    },
     status: {
       type: String,
-      enum: ['New', 'Contacted', 'Closed'],
-      default: 'New',
+      default: 'NEW',
     },
   },
   {

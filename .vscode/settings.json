@@ -6,5 +6,6 @@
     "files.associations": {
         "*.embeddedhtml": "html",
         "**/.php-accessor/**/*.php": "php"
-    }
+    },
+    "git.ignoreLimitWarning": true
 }

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const env = require('./env');
+const seedDatabase = require('./dbSeeder');
 
 let isConnected = false;
 
@@ -21,6 +22,7 @@ const connectDB = async () => {
     });
     isConnected = true;
     console.log(`✅ MongoDB Connected: ${conn.connection.host} / ${conn.connection.name}`);
+    await seedDatabase();
   } catch (error) {
     console.warn(`⚠️ MongoDB Connection Notice: ${error.message}. Running in instant-response fallback mode.`);
   }

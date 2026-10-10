@@ -133,28 +133,22 @@ export default function Services({ hideHeader = false, showVideoBg = false }) {
     <section id="services" className="relative py-16 md:py-20 px-4 sm:px-6 md:px-12 lg:px-16 w-full max-w-[1400px] mx-auto overflow-hidden rounded-[2.5rem]">
       {/* Background Video when enabled */}
       {showVideoBg && !videoError && (
-        <>
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            poster="/img/hero-mockup.png"
-            onLoadedData={() => setVideoReady(true)}
-            onError={() => setVideoError(true)}
-            className={`pointer-events-none absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-700 ${
-              videoReady ? 'opacity-80 dark:opacity-85' : 'opacity-0'
-            }`}
-          >
-            <source src="/videos/services.mp4" type="video/mp4" />
-            <source src="/videos/service.mp4" type="video/mp4" />
-          </video>
-          <div 
-            className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-white/80 via-purple-50/60 to-white/90 dark:from-[#0b0f19]/85 dark:via-[#111827]/70 dark:to-[#070a12]/95 transition-colors duration-500" 
-            aria-hidden="true"
-          />
-        </>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          poster="/img/hero-mockup.png"
+          onLoadedData={() => setVideoReady(true)}
+          onError={() => setVideoError(true)}
+          className={`pointer-events-none absolute inset-0 h-full w-full object-cover object-center [transform:translateZ(0)] [backface-visibility:hidden] [image-rendering:crisp-edges] [filter:contrast(112%)_brightness(106%)_saturate(108%)] transition-opacity duration-300 ${
+            videoReady ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <source src="/videos/services.mp4" type="video/mp4" />
+          <source src="/videos/service.mp4" type="video/mp4" />
+        </video>
       )}
 
       {/* Glow highlight spot */}

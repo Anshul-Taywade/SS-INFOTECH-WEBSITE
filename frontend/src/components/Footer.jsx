@@ -1,8 +1,24 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, MapPin, Phone, Send, CheckCircle2, ArrowUpRight, Github, Twitter, Linkedin, ShieldCheck } from 'lucide-react';
+import { Mail, MapPin, Phone, Send, CheckCircle2, ArrowUpRight, Instagram, Linkedin, ShieldCheck } from 'lucide-react';
 import { api } from '@/services/api';
 import { useSettings } from '@/context/SettingsContext';
+
+function WhatsAppIcon({ size = 16, className = "" }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M17.472 14.382c-.301-.15-1.782-.878-2.058-.978-.276-.1-.476-.15-.677.15-.2.301-.777.978-.953 1.179-.175.2-.351.226-.652.075s-1.272-.469-2.424-1.496c-.896-.799-1.501-1.786-1.677-2.087-.175-.301-.019-.464.132-.614.136-.135.301-.351.451-.527.15-.175.2-.301.301-.501.1-.2.05-.376-.025-.526-.075-.15-.677-1.632-.928-2.234-.244-.587-.493-.507-.677-.516l-.577-.01c-.2 0-.526.075-.802.376s-1.053 1.028-1.053 2.508 1.078 2.909 1.228 3.11c.15.2 2.122 3.24 5.14 4.545.718.31 1.278.496 1.716.635.722.23 1.379.197 1.899.12.579-.087 1.782-.728 2.032-1.431.251-.703.251-1.305.175-1.431-.075-.126-.276-.201-.577-.351z" />
+      <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.392A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.167a8.125 8.125 0 0 1-4.148-1.135l-.297-.176-3.078.86.825-3.003-.193-.307A8.136 8.136 0 0 1 3.833 12c0-4.503 3.664-8.167 8.167-8.167 4.503 0 8.167 3.664 8.167 8.167 0 4.503-3.664 8.167-8.167 8.167z" />
+    </svg>
+  );
+}
 
 export default function Footer() {
   const [email, setEmail] = useState('');
@@ -25,6 +41,30 @@ export default function Footer() {
       setTimeout(() => setSubscribed(false), 4000);
     }
   };
+
+  const whatsappNumber = (settings?.phone || '+91 77700 23791').replace(/\D/g, '');
+  const whatsappUrl = `https://wa.me/${whatsappNumber.startsWith('91') ? whatsappNumber : '91' + whatsappNumber}?text=Hello%20SS%20Infotech%20Team%2C%20I%20would%20like%20to%20inquire%20about%20your%20services.`;
+
+  const socialLinks = [
+    {
+      name: 'LinkedIn',
+      icon: Linkedin,
+      href: 'https://www.linkedin.com/company/ss-infotech-co/?lipi=urn%3Ali%3Apage%3Acompanies_company_index%3B88cd982e-6f87-4343-83a2-0bae70427044',
+      ariaLabel: 'SS Infotech LinkedIn Company Profile'
+    },
+    {
+      name: 'Instagram',
+      icon: Instagram,
+      href: 'https://www.instagram.com/ssinfotech_official',
+      ariaLabel: 'SS Infotech Instagram'
+    },
+    {
+      name: 'WhatsApp',
+      icon: WhatsAppIcon,
+      href: whatsappUrl,
+      ariaLabel: 'Chat with SS Infotech on WhatsApp'
+    },
+  ];
 
   return (
     <footer className="relative border-t border-white/10 dark:border-slate-800 bg-gradient-to-r from-[#5B21B6] via-[#6B21A8] to-[#701A75] dark:from-slate-950 dark:via-slate-950 dark:to-slate-950 dark:bg-slate-950 text-white pt-20 pb-10 px-6 md:px-12 overflow-hidden font-outfit">
@@ -61,14 +101,14 @@ export default function Footer() {
 
             {/* Social Icons */}
             <div className="flex gap-3 pt-2">
-              {[
-                { icon: Twitter, href: '#' },
-                { icon: Linkedin, href: '#' },
-                { icon: Github, href: '#' },
-              ].map((s, idx) => (
+              {socialLinks.map((s, idx) => (
                 <a
                   key={idx}
                   href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.ariaLabel}
+                  title={s.name}
                   className="w-9 h-9 rounded-xl border border-white/20 dark:border-purple-500/30 bg-white/10 dark:bg-purple-950/50 flex items-center justify-center text-white dark:text-purple-200 hover:text-purple-950 dark:hover:text-purple-950 hover:bg-white transition-all duration-300 shadow-sm cursor-pointer"
                 >
                   <s.icon size={16} />
